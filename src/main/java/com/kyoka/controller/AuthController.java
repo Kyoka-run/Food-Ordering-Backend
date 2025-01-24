@@ -22,6 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -126,7 +127,7 @@ public class AuthController {
 
         // Create a cart
         Cart cart = new Cart();
-        cart.setCustomer(user);
+        cart.setUser(user);
         Cart savedCart = cartRepository.save(cart);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully"));
@@ -141,7 +142,7 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/user")
+    @GetMapping("/profile")
     public ResponseEntity<LoginResponse> currentUserDetails(Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
@@ -158,4 +159,51 @@ public class AuthController {
     public ResponseEntity<?> signOutUser() {
         return ResponseEntity.ok(new MessageResponse("You've been logged out successfully"));
     }
+
+//    @PostMapping("/reset-password")
+//    public ResponseEntity<ApiResponse> resetPassword(
+//            @RequestBody ResetPasswordRequest req) throws UserException {
+//
+//        PasswordResetToken resetToken = passwordResetTokenService.findByToken(req.getToken());
+//
+//        if (resetToken == null ) {
+//            throw new UserException("token is required...");
+//        }
+//        if(resetToken.isExpired()) {
+//            passwordResetTokenService.delete(resetToken);
+//            throw new UserException("token get expired...");
+//
+//        }
+//
+//        // Update user's password
+//        User user = resetToken.getUser();
+//        userService.updatePassword(user, req.getPassword());
+//
+//        // Delete the token
+//        passwordResetTokenService.delete(resetToken);
+//
+//        ApiResponse res=new ApiResponse();
+//        res.setMessage("Password updated successfully.");
+//        res.setStatus(true);
+//
+//        return ResponseEntity.ok(res);
+//    }
+//
+//    @PostMapping("/reset-password-request")
+//    public ResponseEntity<ApiResponse> resetPassword(@RequestParam("email") String email) throws UserException {
+//        User user = userService.findUserByEmail(email);
+//        System.out.println("ResetPasswordController.resetPassword()");
+//
+//        if (user == null) {
+//            throw new UserException("user not found");
+//        }
+//
+//        userService.sendPasswordResetEmail(user);
+//
+//        ApiResponse res=new ApiResponse();
+//        res.setMessage("Password reset email sent successfully.");
+//        res.setStatus(true);
+//
+//        return ResponseEntity.ok(res);
+//    }
 }

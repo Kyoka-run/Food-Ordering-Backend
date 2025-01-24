@@ -26,10 +26,10 @@ import lombok.NoArgsConstructor;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long OrderId;
 
     @ManyToOne
-    private User customer;
+    private User user;
 
     @JsonIgnore
     @ManyToOne

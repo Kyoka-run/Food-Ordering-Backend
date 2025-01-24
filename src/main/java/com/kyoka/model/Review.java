@@ -20,10 +20,10 @@ import lombok.NoArgsConstructor;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long reviewId;
 
     @ManyToOne
-    private User customer;
+    private User user;
 
     @ManyToOne
     @JsonIgnore

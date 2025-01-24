@@ -17,10 +17,10 @@ import lombok.NoArgsConstructor;
 public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long restaurantId;
 
     @OneToOne
-    private User owner;
+    private User user;
 
     private String name;
     private String description;

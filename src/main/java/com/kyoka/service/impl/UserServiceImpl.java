@@ -1,14 +1,14 @@
 package com.kyoka.service.impl;
 
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.kyoka.exception.UserException;
+import com.kyoka.model.PasswordResetToken;
 import com.kyoka.model.User;
+import com.kyoka.repository.PasswordResetTokenRepository;
 import com.kyoka.repository.UserRepository;
 import com.kyoka.service.UserService;
 import org.springframework.mail.SimpleMailMessage;
@@ -17,38 +17,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImple implements UserService {
+public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
-    private JwtProvider jwtProvider;
     private PasswordEncoder passwordEncoder;
     private PasswordResetTokenRepository passwordResetTokenRepository;
     private JavaMailSender javaMailSender;
 
-    public UserServiceImplementation(
-            UserRepository userRepository,
-            JwtProvider jwtProvider,
-            PasswordEncoder passwordEncoder,
-            PasswordResetTokenRepository passwordResetTokenRepository,
-            JavaMailSender javaMailSender) {
-
-        this.userRepository=userRepository;
-        this.jwtProvider=jwtProvider;
-        this.passwordEncoder=passwordEncoder;
-        this.passwordResetTokenRepository=passwordResetTokenRepository;
-        this.javaMailSender=javaMailSender;
-
-    }
-
-    @Override
-    public User findUserProfileByJwt(String jwt) throws UserException {
-        String email = jwtProvider.getEmailFromJwtToken(jwt);
-
-        User user = userRepository.findByEmail(email);
-
-        if(user==null) {
-            throw new UserException("user not exist with email "+email);
-        }
-        return user;
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, PasswordResetTokenRepository passwordResetTokenRepository, JavaMailSender javaMailSender) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.javaMailSender = javaMailSender;
     }
 
     @Override
@@ -69,7 +48,6 @@ public class UserServiceImple implements UserService {
 
     @Override
     public void sendPasswordResetEmail(User user) {
-
         // Generate a random token (you might want to use a library for this)
         String resetToken = generateRandomToken();
 
@@ -83,6 +61,7 @@ public class UserServiceImple implements UserService {
         // Send an email containing the reset link
         sendEmail(user.getEmail(), "Password Reset", "Click the following link to reset your password: http://localhost:3000/account/reset-password?token=" + resetToken);
     }
+
     private void sendEmail(String to, String subject, String message) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
 
@@ -92,9 +71,11 @@ public class UserServiceImple implements UserService {
 
         javaMailSender.send(mailMessage);
     }
+
     private String generateRandomToken() {
         return UUID.randomUUID().toString();
     }
+
     private Date calculateExpiryDate() {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
@@ -104,11 +85,9 @@ public class UserServiceImple implements UserService {
 
     @Override
     public User findUserByEmail(String username) throws UserException {
+        User user = userRepository.findByEmail(username);
 
-        User user=userRepository.findByEmail(username);
-
-        if(user!=null) {
-
+        if(user != null) {
             return user;
         }
 
