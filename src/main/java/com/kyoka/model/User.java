@@ -17,12 +17,11 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
 
-    private String fullName;
+    private String userName;
     private String email;
     private String password;
 
@@ -43,5 +42,8 @@ public class User {
     private List<Address> addresses = new ArrayList<>();
 
     private String status;
+
+    public User(String username, String email, String encode) {
+    }
 }
 
