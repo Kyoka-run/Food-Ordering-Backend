@@ -2,11 +2,11 @@ package com.kyoka.service;
 
 import java.util.List;
 
-import com.kyoka.exception.UserException;
+import com.kyoka.exception.ResourceNotFoundException;
 import com.kyoka.model.User;
 
 public interface UserService {
-    public User findUserByEmail(String email) throws UserException;
+    public User findUserByEmail(String email) throws ResourceNotFoundException;
 
     public List<User> findAllUsers();
 

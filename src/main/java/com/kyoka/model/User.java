@@ -1,7 +1,6 @@
 package com.kyoka.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kyoka.dto.RestaurantDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -54,8 +53,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orders;
 
-    @ElementCollection // map a collection of simple value objects
-    private List<RestaurantDTO> favorites = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name = "user_favorite_restaurants",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "restaurant_id"))
+    private List<Restaurant> favoriteRestaurants = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> addresses = new ArrayList<>();

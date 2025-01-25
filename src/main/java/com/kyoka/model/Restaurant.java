@@ -20,7 +20,11 @@ public class Restaurant {
     private Long restaurantId;
 
     @OneToOne
-    private User user;
+    private User owner;
+
+    @ManyToMany(mappedBy = "favoriteRestaurants")
+    @JsonIgnore
+    private List<User> favoritedByUsers = new ArrayList<>();
 
     private String name;
     private String description;

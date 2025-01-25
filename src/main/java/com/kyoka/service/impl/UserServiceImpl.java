@@ -1,11 +1,8 @@
 package com.kyoka.service.impl;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-import com.kyoka.exception.UserException;
+import com.kyoka.exception.ResourceNotFoundException;
 import com.kyoka.model.PasswordResetToken;
 import com.kyoka.model.User;
 import com.kyoka.repository.PasswordResetTokenRepository;
@@ -13,6 +10,7 @@ import com.kyoka.repository.UserRepository;
 import com.kyoka.service.UserService;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -84,13 +82,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByEmail(String username) throws UserException {
-        User user = userRepository.findByEmail(username);
-
-        if(user != null) {
+    public User findUserByEmail(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
             return user;
         }
-
-        throw new UserException("user not exist with username "+username);
+        throw new UsernameNotFoundException("User Not Found with email: " + email);
     }
 }
