@@ -7,7 +7,7 @@ import com.kyoka.model.User;
 
 public interface RestaurantService {
 
-    RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO, User user);
+    RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO);
 
     RestaurantDTO updateRestaurantStatus(Long id);
 

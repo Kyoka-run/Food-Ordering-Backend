@@ -1,5 +1,6 @@
 package com.kyoka.service.impl;
 
+import com.kyoka.Util.AuthUtil;
 import com.kyoka.dto.request.RestaurantDTO;
 import com.kyoka.exception.ResourceNotFoundException;
 import com.kyoka.model.Address;
@@ -33,8 +34,12 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    AuthUtil authUtil;
+
     @Override
-    public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO, User user) {
+    public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO) {
+        User user = authUtil.loggedInUser();
         Address address = new Address();
         address.setCity(restaurantDTO.getAddress().getCity());
         address.setCountry(restaurantDTO.getAddress().getCountry());

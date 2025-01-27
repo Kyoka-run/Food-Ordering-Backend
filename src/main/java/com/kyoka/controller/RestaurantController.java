@@ -26,8 +26,7 @@ public class RestaurantController {
 
     @PostMapping("/admin/restaurants")
     public ResponseEntity<RestaurantDTO> createRestaurant(@RequestBody RestaurantDTO restaurantDTO) {
-        User user = authUtil.loggedInUser();
-        RestaurantDTO restaurant = restaurantService.createRestaurant(restaurantDTO, user);
+        RestaurantDTO restaurant = restaurantService.createRestaurant(restaurantDTO);
         return ResponseEntity.ok(restaurant);
     }
 

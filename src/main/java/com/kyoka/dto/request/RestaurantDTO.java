@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RestaurantDTO {
-    private Long id;
+    private Long restaurantId;
     private String name;
     private String description;
     private String cuisineType;
