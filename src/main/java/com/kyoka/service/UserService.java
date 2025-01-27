@@ -6,11 +6,11 @@ import com.kyoka.exception.ResourceNotFoundException;
 import com.kyoka.model.User;
 
 public interface UserService {
-    public User findUserByEmail(String email) throws ResourceNotFoundException;
+    User findUserByEmail(String email) throws ResourceNotFoundException;
 
-    public List<User> findAllUsers();
+    List<User> findAllUsers();
 
-    public List<User> getPenddingRestaurantOwner();
+    List<User> getPenddingRestaurantOwner();
 
     void updatePassword(User user, String newPassword);
 
