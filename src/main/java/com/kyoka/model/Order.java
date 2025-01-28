@@ -35,7 +35,7 @@ public class Order {
     @ManyToOne
     private Restaurant restaurant;
 
-    private Long totalAmount;
+    private Double totalAmount;
 
     private String orderStatus;
 

@@ -1,30 +1,19 @@
-package com.kyoka.model;
+package com.kyoka.dto.request;
 
-import java.util.List;
-
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+import java.util.List;
+
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class OrderItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class OrderItemDTO {
     private Long orderItemId;
-
-    @ManyToOne
-    private Food food;
-
+    private Long foodId;
+    private String foodName;
     private int quantity;
-
     private Double totalPrice;
-
-    @ElementCollection
     private List<String> ingredients;
 }
-
-

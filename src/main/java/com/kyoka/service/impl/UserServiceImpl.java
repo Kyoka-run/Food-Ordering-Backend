@@ -2,7 +2,6 @@ package com.kyoka.service.impl;
 
 import java.util.*;
 
-import com.kyoka.exception.ResourceNotFoundException;
 import com.kyoka.model.PasswordResetToken;
 import com.kyoka.model.User;
 import com.kyoka.repository.PasswordResetTokenRepository;
