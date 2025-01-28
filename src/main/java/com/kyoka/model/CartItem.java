@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -24,6 +26,9 @@ public class CartItem {
     private Food food;
 
     private int quantity;
+
+    @ElementCollection
+    private List<String> ingredients;
 
     private Long totalPrice;
 }
