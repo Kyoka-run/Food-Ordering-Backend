@@ -1,7 +1,7 @@
 package com.kyoka.service;
 
-import com.kyoka.dto.request.IngredientCategoryDTO;
-import com.kyoka.dto.request.IngredientsItemDTO;
+import com.kyoka.dto.IngredientCategoryDTO;
+import com.kyoka.dto.IngredientsItemDTO;
 import java.util.List;
 
 public interface IngredientsService {

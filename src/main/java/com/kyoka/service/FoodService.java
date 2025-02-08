@@ -1,8 +1,6 @@
 package com.kyoka.service;
 
-import com.kyoka.dto.request.FoodDTO;
-import com.kyoka.model.Category;
-import com.kyoka.model.Restaurant;
+import com.kyoka.dto.FoodDTO;
 
 import java.util.List;
 

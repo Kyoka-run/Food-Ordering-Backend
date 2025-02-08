@@ -1,7 +1,6 @@
 package com.kyoka.service;
 
-import com.kyoka.dto.request.CategoryDTO;
-import com.kyoka.model.User;
+import com.kyoka.dto.CategoryDTO;
 
 import java.util.List;
 

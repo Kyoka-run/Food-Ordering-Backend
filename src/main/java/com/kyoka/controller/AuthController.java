@@ -1,5 +1,7 @@
 package com.kyoka.controller;
 
+import com.kyoka.dto.UserDTO;
+import com.kyoka.exception.ResourceNotFoundException;
 import com.kyoka.model.AppRole;
 import com.kyoka.model.Cart;
 import com.kyoka.model.Role;
@@ -142,16 +144,25 @@ public class AuthController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<LoginResponse> currentUserDetails(Authentication authentication) {
+    public ResponseEntity<UserDTO> currentUserDetails(Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        User user = userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userDetails.getId()));
 
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
+                .toList();
 
-        LoginResponse response = new LoginResponse(userDetails.getId(), userDetails.getUsername(), roles);
+        UserDTO userDTO = new UserDTO(
+                user.getUserId(),
+                user.getUserName(),
+                roles,
+                user.getFavoriteRestaurants(),
+                user.getEmail(),
+                user.getAddresses()
+        );
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(userDTO);
     }
 
     @PostMapping("/signout")

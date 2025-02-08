@@ -1,8 +1,8 @@
 package com.kyoka.controller;
 
-import com.kyoka.dto.request.AddCartItemRequest;
-import com.kyoka.dto.request.CartDTO;
-import com.kyoka.dto.request.CartItemDTO;
+import com.kyoka.dto.AddCartItemRequest;
+import com.kyoka.dto.CartDTO;
+import com.kyoka.dto.CartItemDTO;
 import com.kyoka.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,9 +41,9 @@ public class CartController {
         return ResponseEntity.ok(total);
     }
 
-    @GetMapping("/cart/")
-    public ResponseEntity<CartDTO> findUserCart(@RequestParam Long userId) {
-        CartDTO cartDTO = cartService.findCartByUserId(userId);
+    @GetMapping("/cart")
+    public ResponseEntity<CartDTO> findUserCart() {
+        CartDTO cartDTO = cartService.findCartByUserId();
         return ResponseEntity.ok(cartDTO);
     }
 

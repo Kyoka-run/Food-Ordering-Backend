@@ -1,9 +1,9 @@
 package com.kyoka.service;
 
-import com.kyoka.dto.request.CreateOrderItemRequest;
-import com.kyoka.dto.request.CreateOrderRequest;
-import com.kyoka.dto.request.OrderDTO;
-import com.kyoka.dto.request.OrderItemDTO;
+import com.kyoka.dto.CreateOrderItemRequest;
+import com.kyoka.dto.CreateOrderRequest;
+import com.kyoka.dto.OrderDTO;
+import com.kyoka.dto.OrderItemDTO;
 
 import java.util.List;
 

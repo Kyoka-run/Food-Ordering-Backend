@@ -20,6 +20,7 @@ public class Restaurant {
     private Long restaurantId;
 
     @OneToOne
+    @JoinColumn(name = "owner_id")
     private User owner;
 
     @ManyToMany(mappedBy = "favoriteRestaurants")

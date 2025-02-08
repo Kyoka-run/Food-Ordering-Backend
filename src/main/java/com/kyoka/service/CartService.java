@@ -1,8 +1,8 @@
 package com.kyoka.service;
 
-import com.kyoka.dto.request.AddCartItemRequest;
-import com.kyoka.dto.request.CartDTO;
-import com.kyoka.dto.request.CartItemDTO;
+import com.kyoka.dto.AddCartItemRequest;
+import com.kyoka.dto.CartDTO;
+import com.kyoka.dto.CartItemDTO;
 
 public interface CartService {
     CartItemDTO addItemToCart(AddCartItemRequest request);
@@ -13,7 +13,7 @@ public interface CartService {
 
     Double calculateCartTotal(Long cartId);
 
-    CartDTO findCartByUserId(Long userId);
+    CartDTO findCartByUserId();
 
     CartDTO clearCart(Long userId);
 }

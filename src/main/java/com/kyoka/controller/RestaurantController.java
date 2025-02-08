@@ -1,14 +1,13 @@
 package com.kyoka.controller;
 
 import com.kyoka.Util.AuthUtil;
-import com.kyoka.dto.request.RestaurantDTO;
+import com.kyoka.dto.RestaurantDTO;
 import com.kyoka.model.User;
 import com.kyoka.service.RestaurantService;
-import com.kyoka.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.kyoka.dto.response.APIResponse;
+import com.kyoka.dto.APIResponse;
 
 import java.util.List;
 
@@ -17,9 +16,6 @@ import java.util.List;
 public class RestaurantController {
     @Autowired
     private RestaurantService restaurantService;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private AuthUtil authUtil;

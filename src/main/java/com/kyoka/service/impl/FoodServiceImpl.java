@@ -1,6 +1,6 @@
 package com.kyoka.service.impl;
 
-import com.kyoka.dto.request.FoodDTO;
+import com.kyoka.dto.FoodDTO;
 import com.kyoka.exception.APIException;
 import com.kyoka.exception.ResourceNotFoundException;
 import com.kyoka.model.Category;

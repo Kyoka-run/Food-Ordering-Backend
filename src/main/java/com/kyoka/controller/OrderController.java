@@ -1,9 +1,9 @@
 package com.kyoka.controller;
 
 import com.kyoka.Util.AuthUtil;
-import com.kyoka.dto.request.CreateOrderRequest;
-import com.kyoka.dto.request.OrderDTO;
-import com.kyoka.dto.response.APIResponse;
+import com.kyoka.dto.CreateOrderRequest;
+import com.kyoka.dto.OrderDTO;
+import com.kyoka.dto.APIResponse;
 import com.kyoka.model.User;
 import com.kyoka.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;

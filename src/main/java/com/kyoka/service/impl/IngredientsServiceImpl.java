@@ -1,7 +1,7 @@
 package com.kyoka.service.impl;
 
-import com.kyoka.dto.request.IngredientCategoryDTO;
-import com.kyoka.dto.request.IngredientsItemDTO;
+import com.kyoka.dto.IngredientCategoryDTO;
+import com.kyoka.dto.IngredientsItemDTO;
 import com.kyoka.exception.ResourceNotFoundException;
 import com.kyoka.model.IngredientCategory;
 import com.kyoka.model.IngredientsItem;

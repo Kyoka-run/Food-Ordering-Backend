@@ -1,4 +1,4 @@
-package com.kyoka.dto.request;
+package com.kyoka.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;

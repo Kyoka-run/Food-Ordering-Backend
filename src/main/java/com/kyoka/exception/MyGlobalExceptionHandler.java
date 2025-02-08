@@ -1,6 +1,6 @@
 package com.kyoka.exception;
 
-import com.kyoka.dto.response.APIResponse;
+import com.kyoka.dto.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

@@ -1,4 +1,4 @@
-package com.kyoka.dto.request;
+package com.kyoka.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

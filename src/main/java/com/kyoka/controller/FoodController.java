@@ -1,9 +1,8 @@
 package com.kyoka.controller;
 
 import com.kyoka.Util.AuthUtil;
-import com.kyoka.dto.request.FoodDTO;
-import com.kyoka.dto.request.RestaurantDTO;
-import com.kyoka.dto.response.APIResponse;
+import com.kyoka.dto.FoodDTO;
+import com.kyoka.dto.APIResponse;
 import com.kyoka.service.FoodService;
 import com.kyoka.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;

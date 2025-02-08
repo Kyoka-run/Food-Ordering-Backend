@@ -2,7 +2,7 @@ package com.kyoka.service;
 
 import java.util.List;
 
-import com.kyoka.dto.request.RestaurantDTO;
+import com.kyoka.dto.RestaurantDTO;
 import com.kyoka.model.User;
 
 public interface RestaurantService {

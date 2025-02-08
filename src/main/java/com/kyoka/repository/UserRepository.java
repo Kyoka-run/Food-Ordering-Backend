@@ -8,8 +8,8 @@ import com.kyoka.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u Where u.status='PENDING'")
-    public List<User> getPendingRestaurantOwners();
-    public User findByEmail(String email);
+    List<User> getPendingRestaurantOwners();
+    Optional<User> findByEmail(String email);
     Optional<User> findByUserName(String username);
     boolean existsByUserName(String username);
     Boolean existsByEmail(String email);

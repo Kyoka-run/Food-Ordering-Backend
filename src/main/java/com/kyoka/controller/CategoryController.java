@@ -1,8 +1,8 @@
 package com.kyoka.controller;
 
 import com.kyoka.Util.AuthUtil;
-import com.kyoka.dto.request.CategoryDTO;
-import com.kyoka.dto.response.APIResponse;
+import com.kyoka.dto.CategoryDTO;
+import com.kyoka.dto.APIResponse;
 import com.kyoka.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,9 +1,9 @@
 package com.kyoka.service.impl;
 
 import com.kyoka.Util.AuthUtil;
-import com.kyoka.dto.request.AddCartItemRequest;
-import com.kyoka.dto.request.CartDTO;
-import com.kyoka.dto.request.CartItemDTO;
+import com.kyoka.dto.AddCartItemRequest;
+import com.kyoka.dto.CartDTO;
+import com.kyoka.dto.CartItemDTO;
 import com.kyoka.exception.ResourceNotFoundException;
 import com.kyoka.model.Cart;
 import com.kyoka.model.CartItem;
@@ -114,7 +114,9 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartDTO findCartByUserId(Long userId) {
+    public CartDTO findCartByUserId() {
+        User user = authUtil.loggedInUser();
+        Long userId = user.getUserId();
         Cart cart = cartRepository.findCartByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart", "user id", userId));
         return modelMapper.map(cart, CartDTO.class);

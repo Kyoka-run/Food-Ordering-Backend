@@ -1,7 +1,7 @@
 package com.kyoka.controller;
 
-import com.kyoka.dto.request.IngredientCategoryDTO;
-import com.kyoka.dto.request.IngredientsItemDTO;
+import com.kyoka.dto.IngredientCategoryDTO;
+import com.kyoka.dto.IngredientsItemDTO;
 import com.kyoka.service.IngredientsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,7 @@
 package com.kyoka.service.impl;
 
 import com.kyoka.Util.AuthUtil;
-import com.kyoka.dto.request.RestaurantDTO;
+import com.kyoka.dto.RestaurantDTO;
 import com.kyoka.exception.ResourceNotFoundException;
 import com.kyoka.model.Address;
 import com.kyoka.model.Restaurant;
@@ -10,7 +10,6 @@ import com.kyoka.repository.AddressRepository;
 import com.kyoka.repository.RestaurantRepository;
 import com.kyoka.repository.UserRepository;
 import com.kyoka.service.RestaurantService;
-import com.kyoka.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,9 +23,6 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Autowired
     private AddressRepository addressRepository;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private UserRepository userRepository;

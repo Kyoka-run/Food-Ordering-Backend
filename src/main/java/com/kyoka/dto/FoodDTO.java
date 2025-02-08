@@ -1,4 +1,4 @@
-package com.kyoka.dto.request;
+package com.kyoka.dto;
 
 import com.kyoka.model.Category;
 import com.kyoka.model.IngredientsItem;

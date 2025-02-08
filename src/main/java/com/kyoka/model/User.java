@@ -64,7 +64,10 @@ public class User {
 
     private String status;
 
-    public User(String username, String email, String encode) {
+    public User(String username, String email, String password) {
+        this.userName = username;
+        this.email = email;
+        this.password = password;
     }
 }
 
