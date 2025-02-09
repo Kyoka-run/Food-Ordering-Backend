@@ -56,6 +56,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         restaurant.setOpeningHours(restaurantDTO.getOpeningHours());
         restaurant.setRegistrationDate(restaurantDTO.getRegistrationDate());
         restaurant.setOwner(user);
+        restaurant.setOpen(true);
 
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
         return modelMapper.map(savedRestaurant, RestaurantDTO.class);
@@ -134,9 +135,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public RestaurantDTO updateRestaurantStatus(Long restaurantId) {
-        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+        Restaurant existRestaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", restaurantId));
-        restaurant.setOpen(!restaurant.isOpen());
+        existRestaurant.setOpen(!existRestaurant.isOpen());
+        Restaurant restaurant = restaurantRepository.save(existRestaurant);
         return modelMapper.map(restaurant, RestaurantDTO.class);
     }
 }

@@ -21,4 +21,5 @@ public class RestaurantDTO {
     private String openingHours;
     private List<String> images;
     private LocalDateTime registrationDate;
+    private boolean open;
 }
