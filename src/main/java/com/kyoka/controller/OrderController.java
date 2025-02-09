@@ -1,11 +1,11 @@
 package com.kyoka.controller;
 
-import com.kyoka.Util.AuthUtil;
 import com.kyoka.dto.CreateOrderRequest;
 import com.kyoka.dto.OrderDTO;
 import com.kyoka.dto.APIResponse;
-import com.kyoka.model.User;
+import com.kyoka.dto.PaymentResponse;
 import com.kyoka.service.OrderService;
+import com.stripe.exception.StripeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,19 +20,15 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @Autowired
-    private AuthUtil authUtil;
-
     @PostMapping("/order")
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody CreateOrderRequest request) {
-        OrderDTO orderDTO = orderService.createOrder(request);
-        return ResponseEntity.ok(orderDTO);
+    public ResponseEntity<PaymentResponse> createOrder(@RequestBody CreateOrderRequest request) throws StripeException {
+        PaymentResponse paymentResponse = orderService.createOrder(request);
+        return ResponseEntity.ok(paymentResponse);
     }
 
     @GetMapping("/order/user")
     public ResponseEntity<List<OrderDTO>> getAllUserOrders() {
-        User user = authUtil.loggedInUser();
-        List<OrderDTO> orders = orderService.getUserOrders(user.getUserId());
+        List<OrderDTO> orders = orderService.getUserOrders();
         return ResponseEntity.ok(orders);
     }
 

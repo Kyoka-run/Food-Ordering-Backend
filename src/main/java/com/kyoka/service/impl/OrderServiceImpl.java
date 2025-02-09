@@ -1,15 +1,14 @@
 package com.kyoka.service.impl;
 
 import com.kyoka.Util.AuthUtil;
-import com.kyoka.dto.CreateOrderRequest;
-import com.kyoka.dto.OrderDTO;
-import com.kyoka.dto.CreateOrderItemRequest;
-import com.kyoka.dto.OrderItemDTO;
+import com.kyoka.dto.*;
 import com.kyoka.exception.APIException;
 import com.kyoka.exception.ResourceNotFoundException;
 import com.kyoka.model.*;
 import com.kyoka.repository.*;
 import com.kyoka.service.OrderService;
+import com.kyoka.service.PaymentService;
+import com.stripe.exception.StripeException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,9 +39,12 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private PaymentService paymentService;
+
     @Override
     @Transactional
-    public OrderDTO createOrder(CreateOrderRequest request) {
+    public PaymentResponse createOrder(CreateOrderRequest request) throws StripeException {
         User user = authUtil.loggedInUser();
 
         Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
@@ -99,7 +101,8 @@ public class OrderServiceImpl implements OrderService {
         order.setPayment(payment);
 
         Order savedOrder = orderRepository.save(order);
-        return modelMapper.map(savedOrder, OrderDTO.class);
+
+        return paymentService.generatePaymentLink(savedOrder);
     }
 
     @Override
@@ -117,7 +120,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDTO> getUserOrders(Long userId) {
+    public List<OrderDTO> getUserOrders() {
+        Long userId = authUtil.loggedInUserId();
         List<Order> orders = orderRepository.findAllUserOrders(userId);
         return orders.stream()
                 .map(order -> modelMapper.map(order, OrderDTO.class))

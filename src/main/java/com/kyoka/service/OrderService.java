@@ -1,18 +1,16 @@
 package com.kyoka.service;
 
-import com.kyoka.dto.CreateOrderItemRequest;
-import com.kyoka.dto.CreateOrderRequest;
-import com.kyoka.dto.OrderDTO;
-import com.kyoka.dto.OrderItemDTO;
+import com.kyoka.dto.*;
+import com.stripe.exception.StripeException;
 
 import java.util.List;
 
 public interface OrderService {
-    OrderDTO createOrder(CreateOrderRequest request);
+    PaymentResponse createOrder(CreateOrderRequest request) throws StripeException;
 
     OrderDTO updateOrderStatus(Long orderId, String status);
 
-    List<OrderDTO> getUserOrders(Long userId);
+    List<OrderDTO> getUserOrders();
 
     List<OrderDTO> getRestaurantOrders(Long restaurantId, String orderStatus);
 
