@@ -17,4 +17,8 @@ public interface IngredientsService {
     IngredientsItemDTO createIngredientsItem(IngredientsItemDTO itemDTO);
 
     IngredientsItemDTO updateStock(Long id);
+
+    IngredientCategoryDTO updateIngredientsCategory(Long id, IngredientCategoryDTO categoryDTO);
+
+    IngredientsItemDTO updateIngredientsItem(Long id, IngredientsItemDTO itemDTO);
 }
