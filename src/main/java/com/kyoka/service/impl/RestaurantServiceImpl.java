@@ -67,8 +67,21 @@ public class RestaurantServiceImpl implements RestaurantService {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", restaurantId));
 
+        Address address = addressRepository.findById(restaurantDTO.getAddress().getAddressId())
+                .orElseThrow(() -> new ResourceNotFoundException("Address", "id", restaurantDTO.getAddress().getAddressId()));
+
+        address.setCity(restaurantDTO.getAddress().getCity());
+        address.setCountry(restaurantDTO.getAddress().getCountry());
+        address.setPostalCode(restaurantDTO.getAddress().getPostalCode());
+        address.setState(restaurantDTO.getAddress().getState());
+        address.setStreetAddress(restaurantDTO.getAddress().getStreetAddress());
+        Address savedAddress = addressRepository.save(address);
+
+        restaurant.setContactInformation(restaurantDTO.getContactInformation());
         restaurant.setCuisineType(restaurantDTO.getCuisineType());
         restaurant.setDescription(restaurantDTO.getDescription());
+        restaurant.setName(restaurantDTO.getName());
+        restaurant.setOpeningHours(restaurantDTO.getOpeningHours());
 
         Restaurant updatedRestaurant = restaurantRepository.save(restaurant);
         return modelMapper.map(updatedRestaurant, RestaurantDTO.class);

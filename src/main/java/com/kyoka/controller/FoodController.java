@@ -56,7 +56,7 @@ public class FoodController {
 
     @PutMapping("/admin/food/{id}/availability")
     public ResponseEntity<FoodDTO> updateFoodAvailability(@PathVariable Long id) {
-        FoodDTO food = foodService.updateAvailibilityStatus(id);
+        FoodDTO food = foodService.updateAvailabilityStatus(id);
         return ResponseEntity.ok(food);
     }
 
@@ -65,4 +65,14 @@ public class FoodController {
         FoodDTO food = foodService.findFoodById(id);
         return ResponseEntity.ok(food);
     }
+
+    @PutMapping("/admin/food/{id}")
+    public ResponseEntity<FoodDTO> updateFood(
+            @PathVariable Long id,
+            @RequestBody FoodDTO foodDTO) {
+        FoodDTO updatedFood = foodService.updateFood(id, foodDTO);
+        return ResponseEntity.ok(updatedFood);
+    }
+
+
 }

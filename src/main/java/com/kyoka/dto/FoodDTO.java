@@ -12,18 +12,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FoodDTO {
+    private Long foodId;
     private String name;
     private String description;
     private Long price;
-
     private Category category;
-    private List<String> images;
-
+    private String image;
     private Long restaurantId;
-
     private boolean vegetarian;
     private boolean seasonal;
-
+    private boolean available;
     private List<IngredientsItem> ingredients;
 }
 

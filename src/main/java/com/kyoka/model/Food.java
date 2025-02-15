@@ -25,9 +25,7 @@ public class Food {
     @ManyToOne
     private Category foodCategory;
 
-    @ElementCollection
-    @Column(length = 1000)
-    private List<String> images;
+    private String image;
 
     private boolean available;
 

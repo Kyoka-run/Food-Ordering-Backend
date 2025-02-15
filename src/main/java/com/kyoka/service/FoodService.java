@@ -15,5 +15,7 @@ public interface FoodService {
 
     FoodDTO findFoodById(Long foodId);
 
-    FoodDTO updateAvailibilityStatus(Long foodId);
+    FoodDTO updateAvailabilityStatus(Long foodId);
+
+    FoodDTO updateFood(Long foodId, FoodDTO foodDTO);
 }

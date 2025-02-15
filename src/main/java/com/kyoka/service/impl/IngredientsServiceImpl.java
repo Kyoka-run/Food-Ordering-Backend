@@ -100,7 +100,7 @@ public class IngredientsServiceImpl implements IngredientsService {
         item.setName(itemDTO.getName());
         item.setRestaurant(restaurant);
         item.setCategory(category);
-        item.setInStoke(true);
+        item.setInStock(true);
 
         IngredientsItem savedItem = ingredientsItemRepository.save(item);
 
@@ -116,9 +116,37 @@ public class IngredientsServiceImpl implements IngredientsService {
         IngredientsItem item = ingredientsItemRepository.findById(ingredientItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ingredient Item", "id", ingredientItemId));
 
-        item.setInStoke(!item.isInStoke());
+        item.setInStock(!item.isInStock());
         IngredientsItem updatedItem = ingredientsItemRepository.save(item);
 
+        return modelMapper.map(updatedItem, IngredientsItemDTO.class);
+    }
+
+    @Override
+    public IngredientCategoryDTO updateIngredientsCategory(Long id, IngredientCategoryDTO categoryDTO) {
+        IngredientCategory category = ingredientsCategoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient Category", "id", id));
+
+        category.setName(categoryDTO.getName());
+
+        IngredientCategory updatedCategory = ingredientsCategoryRepository.save(category);
+        return modelMapper.map(updatedCategory, IngredientCategoryDTO.class);
+    }
+
+    @Override
+    public IngredientsItemDTO updateIngredientsItem(Long id, IngredientsItemDTO itemDTO) {
+        IngredientsItem item = ingredientsItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient Item", "id", id));
+
+        item.setName(itemDTO.getName());
+
+        if (itemDTO.getCategoryId() != null) {
+            IngredientCategory category = ingredientsCategoryRepository.findById(itemDTO.getCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Ingredient Category", "id", itemDTO.getCategoryId()));
+            item.setCategory(category);
+        }
+
+        IngredientsItem updatedItem = ingredientsItemRepository.save(item);
         return modelMapper.map(updatedItem, IngredientsItemDTO.class);
     }
 }

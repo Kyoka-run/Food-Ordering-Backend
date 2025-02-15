@@ -47,7 +47,7 @@ public class FoodServiceImpl implements FoodService {
         food.setFoodCategory(category);
         food.setCreationDate(new Date());
         food.setDescription(foodDTO.getDescription());
-        food.setImages(foodDTO.getImages());
+        food.setImage(foodDTO.getImage());
         food.setName(foodDTO.getName());
         food.setPrice(foodDTO.getPrice());
         food.setSeasonal(foodDTO.isSeasonal());
@@ -115,11 +115,47 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public FoodDTO updateAvailibilityStatus(Long foodId) {
+    public FoodDTO updateAvailabilityStatus(Long foodId) {
         Food food = foodRepository.findById(foodId)
                 .orElseThrow(() -> new ResourceNotFoundException("Food", "id", foodId));
 
         food.setAvailable(!food.isAvailable());
+        Food updatedFood = foodRepository.save(food);
+        return modelMapper.map(updatedFood, FoodDTO.class);
+    }
+
+    @Override
+    public FoodDTO updateFood(Long foodId, FoodDTO foodDTO) {
+        Food food = foodRepository.findById(foodId)
+                .orElseThrow(() -> new ResourceNotFoundException("Food", "id", foodId));
+
+        // Find category if it's being updated
+        if (foodDTO.getCategory() != null && foodDTO.getCategory().getCategoryId() != null) {
+            Category category = categoryRepository.findById(foodDTO.getCategory().getCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category", "id",
+                            foodDTO.getCategory().getCategoryId()));
+
+            // Verify category belongs to same restaurant
+            if (!category.getRestaurant().getRestaurantId().equals(food.getRestaurant().getRestaurantId())) {
+                throw new APIException("Category does not exist in this restaurant");
+            }
+            food.setFoodCategory(category);
+        }
+
+        // Update fields if provided
+        if (foodDTO.getName() != null) food.setName(foodDTO.getName());
+        if (foodDTO.getDescription() != null) food.setDescription(foodDTO.getDescription());
+        if (foodDTO.getPrice() != null) food.setPrice(foodDTO.getPrice());
+        if (foodDTO.getImage() != null) food.setImage(foodDTO.getImage());
+        food.setVegetarian(foodDTO.isVegetarian());
+        food.setSeasonal(foodDTO.isSeasonal());
+
+        // Update ingredients if provided
+        if (foodDTO.getIngredients() != null) {
+            food.setIngredients(foodDTO.getIngredients());
+        }
+
+        // Save and return updated food
         Food updatedFood = foodRepository.save(food);
         return modelMapper.map(updatedFood, FoodDTO.class);
     }

@@ -11,6 +11,7 @@ public class IngredientsItemDTO {
     private Long ingredientsItemId;
     private String name;
     private Long categoryId;
+    private String categoryName;
     private Long restaurantId;
     private boolean inStock;
 }

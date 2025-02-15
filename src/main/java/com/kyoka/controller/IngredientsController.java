@@ -28,7 +28,7 @@ public class IngredientsController {
         return ResponseEntity.ok(createdItem);
     }
 
-    @PutMapping("/{id}/stoke")
+    @PutMapping("/{id}/stock")
     public ResponseEntity<IngredientsItemDTO> updateStock(@PathVariable Long id) {
         IngredientsItemDTO updatedItem = ingredientsService.updateStock(id);
         return ResponseEntity.ok(updatedItem);
@@ -44,5 +44,21 @@ public class IngredientsController {
     public ResponseEntity<List<IngredientCategoryDTO>> getRestaurantsIngredientCategories(@PathVariable Long id) {
         List<IngredientCategoryDTO> categories = ingredientsService.findIngredientsCategoryByRestaurantId(id);
         return ResponseEntity.ok(categories);
+    }
+
+    @PutMapping("/category/{id}")
+    public ResponseEntity<IngredientCategoryDTO> updateIngredientCategory(
+            @PathVariable Long id,
+            @RequestBody IngredientCategoryDTO categoryDTO) {
+        IngredientCategoryDTO updatedCategory = ingredientsService.updateIngredientsCategory(id, categoryDTO);
+        return ResponseEntity.ok(updatedCategory);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<IngredientsItemDTO> updateIngredient(
+            @PathVariable Long id,
+            @RequestBody IngredientsItemDTO itemDTO) {
+        IngredientsItemDTO updatedItem = ingredientsService.updateIngredientsItem(id, itemDTO);
+        return ResponseEntity.ok(updatedItem);
     }
 }
