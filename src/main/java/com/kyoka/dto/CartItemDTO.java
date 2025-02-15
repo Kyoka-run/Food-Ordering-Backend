@@ -12,6 +12,8 @@ import java.util.List;
 public class CartItemDTO {
     private Long cartItemId;
     private Long foodId;
+    private String foodImage;
+    private String foodName;
     private int quantity;
     private Long totalPrice;
     private List<String> ingredients;

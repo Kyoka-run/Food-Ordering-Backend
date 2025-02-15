@@ -10,8 +10,6 @@ public interface UserService {
 
     List<User> findAllUsers();
 
-    List<User> getPenddingRestaurantOwner();
-
     void updatePassword(User user, String newPassword);
 
     void sendPasswordResetEmail(User user);

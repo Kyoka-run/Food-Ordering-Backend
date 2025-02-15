@@ -33,11 +33,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getPenddingRestaurantOwner() {
-        return userRepository.getPendingRestaurantOwners();
-    }
-
-    @Override
     public void updatePassword(User user, String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
