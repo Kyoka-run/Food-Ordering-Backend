@@ -30,10 +30,7 @@ public class Restaurant {
     private String name;
     private String description;
     private String cuisineType;
-
-    @ManyToOne
-    @JoinColumn(name = "address_id")
-    private Address address;
+    private String restaurantAddress;
 
     @Embedded
     private ContactInformation contactInformation;

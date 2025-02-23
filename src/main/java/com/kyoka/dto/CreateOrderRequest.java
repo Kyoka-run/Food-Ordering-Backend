@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateOrderRequest {
     private Long restaurantId;
-    private List<CreateOrderItemRequest> items;
+    private Double amount;
     private Long addressId;
     private String paymentMethod;
 }

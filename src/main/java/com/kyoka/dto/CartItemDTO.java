@@ -14,6 +14,7 @@ public class CartItemDTO {
     private Long foodId;
     private String foodImage;
     private String foodName;
+    private Long foodRestaurantId;
     private int quantity;
     private Long totalPrice;
     private List<String> ingredients;

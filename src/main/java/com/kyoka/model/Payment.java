@@ -28,8 +28,6 @@ public class Payment {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
-
-
 }
 
 

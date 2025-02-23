@@ -8,6 +8,7 @@ import com.kyoka.model.*;
 import com.kyoka.repository.*;
 import com.kyoka.service.OrderService;
 import com.kyoka.service.PaymentService;
+import com.kyoka.service.RestaurantService;
 import com.stripe.exception.StripeException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,39 +67,8 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderItem> orderItems = new ArrayList<>();
 
-        double totalAmount = 0.0;
-
-        for (CreateOrderItemRequest itemRequest : request.getItems()) {
-            Food food = foodRepository.findById(itemRequest.getFoodId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Food", "id", itemRequest.getFoodId()));
-
-            if (!food.isAvailable()) {
-                throw new APIException("Food item " + food.getName() + " is currently unavailable");
-            }
-
-            OrderItem orderItem = new OrderItem();
-            orderItem.setFood(food);
-            orderItem.setQuantity(itemRequest.getQuantity());
-            orderItem.setIngredients(itemRequest.getIngredients());
-
-            double itemTotalPrice = food.getPrice() * itemRequest.getQuantity();
-            orderItem.setTotalPrice(itemTotalPrice);
-
-            orderItems.add(orderItem);
-            totalAmount += itemTotalPrice;
-        }
-
+        order.setTotalAmount(request.getAmount());
         order.setItems(orderItems);
-        order.setTotalAmount(totalAmount);
-        order.setTotalItem(orderItems.size());
-
-        Payment payment = new Payment();
-        payment.setPaymentMethod(request.getPaymentMethod());
-        payment.setPaymentStatus("PENDING");
-        payment.setTotalAmount(totalAmount);
-        payment.setCreatedAt(new Date());
-
-        order.setPayment(payment);
 
         Order savedOrder = orderRepository.save(order);
 

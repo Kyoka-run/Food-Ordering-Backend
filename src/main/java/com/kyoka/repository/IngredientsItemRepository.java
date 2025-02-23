@@ -12,6 +12,6 @@ public interface IngredientsItemRepository extends JpaRepository<IngredientsItem
     @Query("SELECT e FROM IngredientsItem e "
             + "WHERE e.restaurant.restaurantId = :restaurantId "
             + "AND lower(e.name) = lower(:name)"
-            + "AND e.category.name = :categoryName")
+            + "AND e.ingredientCategory.name = :categoryName")
     IngredientsItem findByRestaurantIdAndNameIgnoreCase(Long restaurantId, String name, String categoryName);
 }

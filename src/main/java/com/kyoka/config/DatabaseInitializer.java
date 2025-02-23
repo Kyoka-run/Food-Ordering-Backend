@@ -26,12 +26,10 @@ public class DatabaseInitializer implements CommandLineRunner {
             // Create roles
             Role customerRole = new Role(AppRole.ROLE_CUSTOMER);
             Role ownerRole = new Role(AppRole.ROLE_RESTAURANT_OWNER);
-            Role managerRole = new Role(AppRole.ROLE_RESTAURANT_MANAGER);
             Role adminRole = new Role(AppRole.ROLE_ADMIN);
 
             roleRepository.save(customerRole);
             roleRepository.save(ownerRole);
-            roleRepository.save(managerRole);
             roleRepository.save(adminRole);
             System.out.println("Roles created");
         }

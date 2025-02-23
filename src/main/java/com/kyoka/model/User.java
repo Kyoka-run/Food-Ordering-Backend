@@ -59,10 +59,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "restaurant_id"))
     private List<Restaurant> favoriteRestaurants = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Address> addresses = new ArrayList<>();
-
-    private String status;
 
     public User(String username, String email, String password) {
         this.userName = username;

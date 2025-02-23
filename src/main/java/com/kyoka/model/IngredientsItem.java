@@ -17,13 +17,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class IngredientsItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ingredientsItemId;
 
     private String name;
 
     @ManyToOne
-    private IngredientCategory category;
+    private IngredientCategory ingredientCategory;
 
     @JsonIgnore
     @ManyToOne

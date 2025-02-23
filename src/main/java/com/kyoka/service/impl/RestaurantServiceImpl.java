@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -36,25 +37,17 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Override
     public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO) {
         User user = authUtil.loggedInUser();
-        Address address = new Address();
-        address.setCity(restaurantDTO.getAddress().getCity());
-        address.setCountry(restaurantDTO.getAddress().getCountry());
-        address.setFullName(restaurantDTO.getAddress().getFullName());
-        address.setPostalCode(restaurantDTO.getAddress().getPostalCode());
-        address.setState(restaurantDTO.getAddress().getState());
-        address.setStreetAddress(restaurantDTO.getAddress().getStreetAddress());
-        Address savedAddress = addressRepository.save(address);
 
         Restaurant restaurant = new Restaurant();
 
-        restaurant.setAddress(savedAddress);
+        restaurant.setRestaurantAddress(restaurantDTO.getAddress());
         restaurant.setContactInformation(restaurantDTO.getContactInformation());
         restaurant.setCuisineType(restaurantDTO.getCuisineType());
         restaurant.setDescription(restaurantDTO.getDescription());
         restaurant.setImages(restaurantDTO.getImages());
         restaurant.setName(restaurantDTO.getName());
         restaurant.setOpeningHours(restaurantDTO.getOpeningHours());
-        restaurant.setRegistrationDate(restaurantDTO.getRegistrationDate());
+        restaurant.setRegistrationDate(LocalDateTime.now());
         restaurant.setOwner(user);
         restaurant.setOpen(true);
 
@@ -67,16 +60,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", restaurantId));
 
-        Address address = addressRepository.findById(restaurantDTO.getAddress().getAddressId())
-                .orElseThrow(() -> new ResourceNotFoundException("Address", "id", restaurantDTO.getAddress().getAddressId()));
-
-        address.setCity(restaurantDTO.getAddress().getCity());
-        address.setCountry(restaurantDTO.getAddress().getCountry());
-        address.setPostalCode(restaurantDTO.getAddress().getPostalCode());
-        address.setState(restaurantDTO.getAddress().getState());
-        address.setStreetAddress(restaurantDTO.getAddress().getStreetAddress());
-        Address savedAddress = addressRepository.save(address);
-
+        restaurant.setRestaurantAddress(restaurantDTO.getAddress());
         restaurant.setContactInformation(restaurantDTO.getContactInformation());
         restaurant.setCuisineType(restaurantDTO.getCuisineType());
         restaurant.setDescription(restaurantDTO.getDescription());

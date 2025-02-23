@@ -104,16 +104,6 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Double calculateCartTotal(Long cartId) {
-        Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new ResourceNotFoundException("Cart", "id", cartId));
-
-        return cart.getItems().stream()
-                .mapToDouble(item -> item.getFood().getPrice() * item.getQuantity())
-                .sum();
-    }
-
-    @Override
     public CartDTO findCartByUserId() {
         User user = authUtil.loggedInUser();
         Long userId = user.getUserId();
@@ -123,7 +113,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartDTO clearCart(Long userId) {
+    public CartDTO clearCart() {
+        Long userId = authUtil.loggedInUser().getUserId();
         Cart cart = cartRepository.findCartByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart", "user id", userId));
 

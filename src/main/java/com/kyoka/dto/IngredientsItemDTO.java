@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 public class IngredientsItemDTO {
     private Long ingredientsItemId;
     private String name;
-    private Long categoryId;
-    private String categoryName;
+    private Long ingredientCategoryId;
+    private String ingredientCategoryName;
     private Long restaurantId;
     private boolean inStock;
 }

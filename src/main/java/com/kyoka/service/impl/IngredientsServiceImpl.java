@@ -80,12 +80,12 @@ public class IngredientsServiceImpl implements IngredientsService {
     @Override
     public IngredientsItemDTO createIngredientsItem(IngredientsItemDTO itemDTO) {
         // Find category
-        IngredientCategory category = ingredientsCategoryRepository.findById(itemDTO.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Ingredient Category", "id", itemDTO.getCategoryId()));
+        IngredientCategory ingredientCategory = ingredientsCategoryRepository.findById(itemDTO.getIngredientCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient Category", "id", itemDTO.getIngredientCategoryId()));
 
         // Check if item already exists
         IngredientsItem existingItem = ingredientsItemRepository
-                .findByRestaurantIdAndNameIgnoreCase(itemDTO.getRestaurantId(), itemDTO.getName(), category.getName());
+                .findByRestaurantIdAndNameIgnoreCase(itemDTO.getRestaurantId(), itemDTO.getName(), ingredientCategory.getName());
 
         if (existingItem != null) {
             return modelMapper.map(existingItem, IngredientsItemDTO.class);
@@ -99,14 +99,14 @@ public class IngredientsServiceImpl implements IngredientsService {
         IngredientsItem item = new IngredientsItem();
         item.setName(itemDTO.getName());
         item.setRestaurant(restaurant);
-        item.setCategory(category);
+        item.setIngredientCategory(ingredientCategory);
         item.setInStock(true);
 
         IngredientsItem savedItem = ingredientsItemRepository.save(item);
 
         // Update category's ingredients list
-        category.getIngredients().add(savedItem);
-        ingredientsCategoryRepository.save(category);
+        ingredientCategory.getIngredients().add(savedItem);
+        ingredientsCategoryRepository.save(ingredientCategory);
 
         return modelMapper.map(savedItem, IngredientsItemDTO.class);
     }
@@ -140,10 +140,10 @@ public class IngredientsServiceImpl implements IngredientsService {
 
         item.setName(itemDTO.getName());
 
-        if (itemDTO.getCategoryId() != null) {
-            IngredientCategory category = ingredientsCategoryRepository.findById(itemDTO.getCategoryId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Ingredient Category", "id", itemDTO.getCategoryId()));
-            item.setCategory(category);
+        if (itemDTO.getIngredientCategoryId() != null) {
+            IngredientCategory ingredientCategory = ingredientsCategoryRepository.findById(itemDTO.getIngredientCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Ingredient Category", "id", itemDTO.getIngredientCategoryId()));
+            item.setIngredientCategory(ingredientCategory);
         }
 
         IngredientsItem updatedItem = ingredientsItemRepository.save(item);

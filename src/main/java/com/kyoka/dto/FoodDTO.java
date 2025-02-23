@@ -1,5 +1,6 @@
 package com.kyoka.dto;
 
+import com.kyoka.model.Address;
 import com.kyoka.model.Category;
 import com.kyoka.model.IngredientsItem;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,8 @@ public class FoodDTO {
     private Category category;
     private String image;
     private Long restaurantId;
+    private String restaurantName;
+    private Address restaurantAddress;
     private boolean vegetarian;
     private boolean seasonal;
     private boolean available;

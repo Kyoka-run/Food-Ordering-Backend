@@ -11,9 +11,7 @@ public interface CartService {
 
     CartDTO removeItemFromCart(Long cartItemId);
 
-    Double calculateCartTotal(Long cartId);
-
     CartDTO findCartByUserId();
 
-    CartDTO clearCart(Long userId);
+    CartDTO clearCart();
 }

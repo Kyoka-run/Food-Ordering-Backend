@@ -22,23 +22,15 @@ public class CartController {
     }
 
     @PutMapping("/cart-item/update")
-    public ResponseEntity<CartItemDTO> updateCartItemQuantity(
-            @RequestParam Long cartItemId,
-            @RequestParam int quantity) {
-        CartItemDTO cartItemDTO = cartService.updateCartItemQuantity(cartItemId, quantity);
-        return ResponseEntity.ok(cartItemDTO);
+    public ResponseEntity<CartItemDTO> updateCartItemQuantity(@RequestBody CartItemDTO cartItemDTO) {
+        CartItemDTO updatedCartItemDTO = cartService.updateCartItemQuantity(cartItemDTO.getCartItemId(), cartItemDTO.getQuantity());
+        return ResponseEntity.ok(updatedCartItemDTO);
     }
 
     @DeleteMapping("/cart-item/{id}/remove")
     public ResponseEntity<CartDTO> removeItemFromCart(@PathVariable Long id) {
         CartDTO cart = cartService.removeItemFromCart(id);
         return ResponseEntity.ok(cart);
-    }
-
-    @GetMapping("/cart/total")
-    public ResponseEntity<Double> calculateCartTotals(@RequestParam Long cartId) {
-        Double total = cartService.calculateCartTotal(cartId);
-        return ResponseEntity.ok(total);
     }
 
     @GetMapping("/cart")
@@ -48,8 +40,8 @@ public class CartController {
     }
 
     @PutMapping("/cart/clear")
-    public ResponseEntity<CartDTO> clearCart(@RequestParam Long userId) {
-        CartDTO cartDTO = cartService.clearCart(userId);
+    public ResponseEntity<CartDTO> clearCart() {
+        CartDTO cartDTO = cartService.clearCart();
         return ResponseEntity.ok(cartDTO);
     }
 }
