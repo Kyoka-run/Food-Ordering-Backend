@@ -128,15 +128,6 @@ public class AuthController {
         return ResponseEntity.ok(new MessageResponse("User registered successfully"));
     }
 
-    @GetMapping("/username")
-    public String currentUserName(Authentication authentication) {
-        if (authentication != null) {
-            return authentication.getName();
-        } else {
-            return "NULL";
-        }
-    }
-
     @GetMapping("/profile")
     public ResponseEntity<UserDTO> currentUserDetails(Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
