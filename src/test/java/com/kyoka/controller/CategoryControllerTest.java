@@ -1,7 +1,7 @@
 package com.kyoka.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kyoka.Util.AuthUtil;
+import com.kyoka.util.AuthUtil;
 import com.kyoka.dto.CategoryDTO;
 import com.kyoka.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;

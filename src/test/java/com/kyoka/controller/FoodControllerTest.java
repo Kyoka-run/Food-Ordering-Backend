@@ -1,7 +1,7 @@
 package com.kyoka.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kyoka.Util.AuthUtil;
+import com.kyoka.util.AuthUtil;
 import com.kyoka.dto.FoodDTO;
 import com.kyoka.model.Category;
 import com.kyoka.service.FoodService;

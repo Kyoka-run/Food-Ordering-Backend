@@ -1,6 +1,6 @@
 package com.kyoka.service.impl;
 
-import com.kyoka.Util.AuthUtil;
+import com.kyoka.util.AuthUtil;
 import com.kyoka.dto.NotificationDTO;
 import com.kyoka.model.Notification;
 import com.kyoka.model.User;

@@ -111,9 +111,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.jacoco</groupId>
-			<artifactId>jacoco-maven-plugin</artifactId>
-			<version>0.8.12</version>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
@@ -169,6 +169,9 @@
 								<exclude>com/kyoka/model/**</exclude>
 								<exclude>com/kyoka/dto/**</exclude>
 								<exclude>com/kyoka/security/**</exclude>
+								<exclude>com/kyoka/util/**</exclude>
+								<exclude>com/kyoka/config/**</exclude>
+								<exclude>com/kyoka/exception/**</exclude>
 							</excludes>
 						</configuration>
 					</execution>

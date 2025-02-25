@@ -1,6 +1,6 @@
 package com.kyoka.service.impl;
 
-import com.kyoka.Util.AuthUtil;
+import com.kyoka.util.AuthUtil;
 import com.kyoka.dto.*;
 import com.kyoka.exception.APIException;
 import com.kyoka.exception.ResourceNotFoundException;
@@ -8,7 +8,6 @@ import com.kyoka.model.*;
 import com.kyoka.repository.*;
 import com.kyoka.service.OrderService;
 import com.kyoka.service.PaymentService;
-import com.kyoka.service.RestaurantService;
 import com.stripe.exception.StripeException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

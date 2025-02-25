@@ -1,6 +1,6 @@
 package com.kyoka.service.impl;
 
-import com.kyoka.Util.AuthUtil;
+import com.kyoka.util.AuthUtil;
 import com.kyoka.dto.CategoryDTO;
 import com.kyoka.exception.ResourceNotFoundException;
 import com.kyoka.model.Category;

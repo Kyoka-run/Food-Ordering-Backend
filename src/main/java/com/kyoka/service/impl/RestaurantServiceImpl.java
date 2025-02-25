@@ -1,9 +1,8 @@
 package com.kyoka.service.impl;
 
-import com.kyoka.Util.AuthUtil;
+import com.kyoka.util.AuthUtil;
 import com.kyoka.dto.RestaurantDTO;
 import com.kyoka.exception.ResourceNotFoundException;
-import com.kyoka.model.Address;
 import com.kyoka.model.Restaurant;
 import com.kyoka.model.User;
 import com.kyoka.repository.AddressRepository;

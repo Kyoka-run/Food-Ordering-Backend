@@ -1,4 +1,4 @@
-package com.kyoka.Util;
+package com.kyoka.util;
 
 import com.kyoka.model.User;
 import com.kyoka.repository.UserRepository;

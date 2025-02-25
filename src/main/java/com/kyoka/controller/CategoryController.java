@@ -1,6 +1,6 @@
 package com.kyoka.controller;
 
-import com.kyoka.Util.AuthUtil;
+import com.kyoka.util.AuthUtil;
 import com.kyoka.dto.CategoryDTO;
 import com.kyoka.dto.APIResponse;
 import com.kyoka.service.CategoryService;
