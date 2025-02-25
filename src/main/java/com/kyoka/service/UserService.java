@@ -10,7 +10,7 @@ public interface UserService {
 
     List<User> findAllUsers();
 
-    void updatePassword(User user, String newPassword);
+//    void updatePassword(User user, String newPassword);
 
-    void sendPasswordResetEmail(User user);
+//    void sendPasswordResetEmail(User user);
 }
