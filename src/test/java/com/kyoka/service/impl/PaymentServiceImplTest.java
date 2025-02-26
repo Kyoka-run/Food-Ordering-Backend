@@ -54,7 +54,7 @@ public class PaymentServiceImplTest {
         testOrder.setOrderId(1L);
         testOrder.setUser(testUser);
         testOrder.setRestaurant(testRestaurant);
-        testOrder.setTotalAmount(100.0);
+        testOrder.setAmount(100.0);
         testOrder.setItems(new ArrayList<>());
         testOrder.setOrderStatus("PENDING");
         testOrder.setCreatedAt(new Date());
@@ -87,7 +87,7 @@ public class PaymentServiceImplTest {
     @Test
     void generatePaymentLink_ShouldHandleDecimalAmounts() throws StripeException {
         // Set a decimal amount to test rounding
-        testOrder.setTotalAmount(99.99);
+        testOrder.setAmount(99.99);
 
         // Setup mocked static method for Stripe Session.create()
         Session mockSession = mock(Session.class);

@@ -27,6 +27,9 @@ public class OrderItem {
 
     @ElementCollection
     private List<String> ingredients;
+
+    @ManyToOne
+    private Order order;
 }
 
 

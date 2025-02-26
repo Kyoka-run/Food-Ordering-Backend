@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long OrderId;
+    private Long orderId;
 
     @ManyToOne
     private User user;
@@ -26,7 +26,7 @@ public class Order {
     @ManyToOne
     private Restaurant restaurant;
 
-    private Double totalAmount;
+    private Double amount;
 
     private String orderStatus;
 
@@ -36,13 +36,9 @@ public class Order {
     @ManyToOne
     private Address deliveryAddress;
 
-    @OneToMany(fetch = FetchType.EAGER )
+    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER )
     private List<OrderItem> items;
 
     @OneToOne
     private Payment payment;
-
-    private int totalItem;
-
-    private int totalPrice;
 }

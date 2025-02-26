@@ -61,9 +61,13 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderStatus("PENDING");
         order.setCreatedAt(new Date());
 
-        List<OrderItem> orderItems = new ArrayList<>();
+        System.out.println(orderDTO.getItems());
 
-        order.setTotalAmount(orderDTO.getAmount());
+        List<OrderItem> orderItems = orderDTO.getItems().stream()
+                .map(orderItemDTO -> modelMapper.map(orderItemDTO, OrderItem.class))
+                .toList();
+
+        order.setAmount(orderDTO.getAmount());
         order.setItems(orderItems);
 
         Order savedOrder = orderRepository.save(order);

@@ -28,7 +28,7 @@ public class PaymentServiceImpl implements PaymentService {
                         .setQuantity(1L)
                         .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
                                 .setCurrency("eur")
-                                .setUnitAmount(Math.round(order.getTotalAmount() * 100)) // Specify the order amount in cents
+                                .setUnitAmount(Math.round(order.getAmount() * 100)) // Specify the order amount in cents
                                 .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
                                         .setName("Order #" + order.getOrderId())
                                         .build())

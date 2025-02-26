@@ -103,7 +103,7 @@ public class OrderServiceImplTest {
         testOrder.setDeliveryAddress(testAddress);
         testOrder.setOrderStatus("PENDING");
         testOrder.setCreatedAt(new Date());
-        testOrder.setTotalAmount(20.0);
+        testOrder.setAmount(20.0);
         testOrder.setItems(Collections.singletonList(testOrderItem));
 
         // Set up test OrderDTO
@@ -387,7 +387,7 @@ public class OrderServiceImplTest {
         order.setDeliveryAddress(testAddress);
         order.setOrderStatus(status);
         order.setCreatedAt(new Date());
-        order.setTotalAmount(30.0);
+        order.setAmount(30.0);
         order.setItems(Collections.singletonList(testOrderItem));
         return order;
     }
