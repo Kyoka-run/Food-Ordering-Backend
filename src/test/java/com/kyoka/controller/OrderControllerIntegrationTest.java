@@ -47,7 +47,6 @@ public class OrderControllerIntegrationTest {
 
     private User testUser;
     private OrderDTO testOrderDTO;
-    private CreateOrderRequest testCreateOrderRequest;
     private PaymentResponse testPaymentResponse;
 
     @BeforeEach
@@ -75,18 +74,11 @@ public class OrderControllerIntegrationTest {
         testOrderDTO.setRestaurantId(1L);
         testOrderDTO.setRestaurantName("Test Restaurant");
         testOrderDTO.setItems(orderItems);
-        testOrderDTO.setTotalAmount(20.0);
+        testOrderDTO.setAmount(20.0);
         testOrderDTO.setOrderStatus("PENDING");
         testOrderDTO.setPaymentStatus("PENDING");
         testOrderDTO.setAddressId(1L);
         testOrderDTO.setPaymentMethod("CARD");
-
-        // Set up test create order request
-        testCreateOrderRequest = new CreateOrderRequest();
-        testCreateOrderRequest.setRestaurantId(1L);
-        testCreateOrderRequest.setAmount(20.0);
-        testCreateOrderRequest.setAddressId(1L);
-        testCreateOrderRequest.setPaymentMethod("CARD");
 
         // Set up test payment response
         testPaymentResponse = new PaymentResponse();
@@ -96,11 +88,11 @@ public class OrderControllerIntegrationTest {
     @Test
     @WithMockUser
     void createOrder_ShouldReturnPaymentResponse() throws Exception {
-        when(orderService.createOrder(any(CreateOrderRequest.class))).thenReturn(testPaymentResponse);
+        when(orderService.createOrder(any(OrderDTO.class))).thenReturn(testPaymentResponse);
 
         mockMvc.perform(post("/api/order")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testCreateOrderRequest)))
+                        .content(objectMapper.writeValueAsString(testOrderDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payment_url", is("https://test-payment-url.com")));
     }
@@ -194,7 +186,7 @@ public class OrderControllerIntegrationTest {
         dto.setRestaurantId(1L);
         dto.setRestaurantName("Test Restaurant");
         dto.setItems(new ArrayList<>());
-        dto.setTotalAmount(30.0);
+        dto.setAmount(30.0);
         dto.setOrderStatus(status);
         dto.setPaymentStatus("PENDING");
         dto.setAddressId(1L);

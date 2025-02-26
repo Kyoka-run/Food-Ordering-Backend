@@ -1,7 +1,6 @@
 package com.kyoka.service.impl;
 
 import com.kyoka.util.AuthUtil;
-import com.kyoka.dto.AddCartItemRequest;
 import com.kyoka.dto.CartDTO;
 import com.kyoka.dto.CartItemDTO;
 import com.kyoka.exception.ResourceNotFoundException;
@@ -54,7 +53,7 @@ public class CartServiceImplTest {
     private Cart testCart;
     private Food testFood;
     private CartItem testCartItem;
-    private AddCartItemRequest testAddCartItemRequest;
+    private CartItemDTO testCartItemDTO;
 
     @BeforeEach
     void setUp() {
@@ -86,11 +85,11 @@ public class CartServiceImplTest {
         testCart.setItems(new ArrayList<>(Arrays.asList(testCartItem)));
         testCartItem.setCart(testCart);
 
-        // Set up test AddCartItemRequest
-        testAddCartItemRequest = new AddCartItemRequest();
-        testAddCartItemRequest.setFoodId(1L);
-        testAddCartItemRequest.setQuantity(1);
-        testAddCartItemRequest.setIngredients(Arrays.asList("ingredient1", "ingredient2"));
+        // Set up test CartItemDTO
+        testCartItemDTO = new CartItemDTO();
+        testCartItemDTO.setFoodId(1L);
+        testCartItemDTO.setQuantity(1);
+        testCartItemDTO.setIngredients(Arrays.asList("ingredient1", "ingredient2"));
     }
 
     @Test
@@ -108,10 +107,10 @@ public class CartServiceImplTest {
         differentFood.setName("Different Food");
         differentFood.setPrice(15L);
 
-        AddCartItemRequest differentRequest = new AddCartItemRequest();
-        differentRequest.setFoodId(2L);
-        differentRequest.setQuantity(1);
-        differentRequest.setIngredients(Arrays.asList("ingredient1", "ingredient2"));
+        CartItemDTO differentCartItemDTO = new CartItemDTO();
+        differentCartItemDTO.setFoodId(2L);
+        differentCartItemDTO.setQuantity(1);
+        differentCartItemDTO.setIngredients(Arrays.asList("ingredient1", "ingredient2"));
 
         when(authUtil.loggedInUser()).thenReturn(testUser);
         when(foodRepository.findById(eq(2L))).thenReturn(Optional.of(differentFood));
@@ -124,17 +123,17 @@ public class CartServiceImplTest {
         when(cartRepository.save(any(Cart.class))).thenReturn(cartWithoutItem);
 
         // Act
-        CartItemDTO result = cartService.addItemToCart(differentRequest);
+        CartItemDTO result = cartService.addItemToCart(differentCartItemDTO);
 
         // Assert
         assertNotNull(result);
         assertEquals(2L, result.getCartItemId());
         assertEquals(differentFood.getFoodId(), result.getFoodId());
-        assertEquals(differentRequest.getQuantity(), result.getQuantity());
-        assertEquals(differentFood.getPrice() * differentRequest.getQuantity(), result.getTotalPrice());
+        assertEquals(differentCartItemDTO.getQuantity(), result.getQuantity());
+        assertEquals(differentFood.getPrice() * differentCartItemDTO.getQuantity(), result.getTotalPrice());
 
         verify(authUtil, times(1)).loggedInUser();
-        verify(foodRepository, times(1)).findById(differentRequest.getFoodId());
+        verify(foodRepository, times(1)).findById(differentCartItemDTO.getFoodId());
         verify(cartRepository, times(1)).findCartByUserId(testUser.getUserId());
         verify(cartItemRepository, times(1)).save(any(CartItem.class));
         verify(cartRepository, times(1)).save(cartWithoutItem);
@@ -151,31 +150,31 @@ public class CartServiceImplTest {
         updatedCartItemDTO.setCartItemId(1L);
         updatedCartItemDTO.setFoodId(testFood.getFoodId());
         updatedCartItemDTO.setFoodName(testFood.getName());
-        updatedCartItemDTO.setQuantity(testCartItem.getQuantity() + testAddCartItemRequest.getQuantity());
-        updatedCartItemDTO.setTotalPrice((testCartItem.getQuantity() + testAddCartItemRequest.getQuantity()) * testFood.getPrice());
+        updatedCartItemDTO.setQuantity(testCartItem.getQuantity() + testCartItemDTO.getQuantity());
+        updatedCartItemDTO.setTotalPrice((testCartItem.getQuantity() + testCartItemDTO.getQuantity()) * testFood.getPrice());
 
         when(authUtil.loggedInUser()).thenReturn(testUser);
         when(foodRepository.findById(eq(1L))).thenReturn(Optional.of(testFood));
         when(cartRepository.findCartByUserId(anyLong())).thenReturn(Optional.of(testCart));
         doReturn(updatedCartItemDTO).when(spyCartService).updateCartItemQuantity(
                 eq(testCartItem.getCartItemId()),
-                eq(testCartItem.getQuantity() + testAddCartItemRequest.getQuantity())
+                eq(testCartItem.getQuantity() + testCartItemDTO.getQuantity())
         );
 
         // Act
-        CartItemDTO result = spyCartService.addItemToCart(testAddCartItemRequest);
+        CartItemDTO result = spyCartService.addItemToCart(testCartItemDTO);
 
         // Assert
         assertNotNull(result);
         assertEquals(testCartItem.getCartItemId(), result.getCartItemId());
-        assertEquals(testCartItem.getQuantity() + testAddCartItemRequest.getQuantity(), result.getQuantity());
+        assertEquals(testCartItem.getQuantity() + testCartItemDTO.getQuantity(), result.getQuantity());
 
         verify(authUtil, times(1)).loggedInUser();
-        verify(foodRepository, times(1)).findById(testAddCartItemRequest.getFoodId());
+        verify(foodRepository, times(1)).findById(testCartItemDTO.getFoodId());
         verify(cartRepository, times(1)).findCartByUserId(testUser.getUserId());
         verify(spyCartService, times(1)).updateCartItemQuantity(
                 testCartItem.getCartItemId(),
-                testCartItem.getQuantity() + testAddCartItemRequest.getQuantity()
+                testCartItem.getQuantity() + testCartItemDTO.getQuantity()
         );
     }
 
@@ -187,11 +186,11 @@ public class CartServiceImplTest {
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> {
-            cartService.addItemToCart(testAddCartItemRequest);
+            cartService.addItemToCart(testCartItemDTO);
         });
 
         verify(authUtil, times(1)).loggedInUser();
-        verify(foodRepository, times(1)).findById(testAddCartItemRequest.getFoodId());
+        verify(foodRepository, times(1)).findById(testCartItemDTO.getFoodId());
         verify(cartRepository, never()).findCartByUserId(anyLong());
         verify(cartItemRepository, never()).save(any(CartItem.class));
     }
@@ -205,11 +204,11 @@ public class CartServiceImplTest {
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> {
-            cartService.addItemToCart(testAddCartItemRequest);
+            cartService.addItemToCart(testCartItemDTO);
         });
 
         verify(authUtil, times(1)).loggedInUser();
-        verify(foodRepository, times(1)).findById(testAddCartItemRequest.getFoodId());
+        verify(foodRepository, times(1)).findById(testCartItemDTO.getFoodId());
         verify(cartRepository, times(1)).findCartByUserId(testUser.getUserId());
         verify(cartItemRepository, never()).save(any(CartItem.class));
     }

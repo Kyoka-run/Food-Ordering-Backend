@@ -1,7 +1,6 @@
 package com.kyoka.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kyoka.dto.AddCartItemRequest;
 import com.kyoka.dto.CartDTO;
 import com.kyoka.dto.CartItemDTO;
 import com.kyoka.service.CartService;
@@ -45,10 +44,10 @@ public class CartControllerTest {
     @Test
     void addItemToCart_ShouldReturnAddedCartItem() throws Exception {
         // Arrange
-        AddCartItemRequest request = new AddCartItemRequest();
-        request.setFoodId(1L);
-        request.setQuantity(2);
-        request.setIngredients(Arrays.asList("ingredient1", "ingredient2"));
+        CartItemDTO requestDto = new CartItemDTO();
+        requestDto.setFoodId(1L);
+        requestDto.setQuantity(2);
+        requestDto.setIngredients(Arrays.asList("ingredient1", "ingredient2"));
 
         CartItemDTO responseDto = new CartItemDTO();
         responseDto.setCartItemId(1L);
@@ -58,12 +57,12 @@ public class CartControllerTest {
         responseDto.setTotalPrice(20L);
         responseDto.setIngredients(Arrays.asList("ingredient1", "ingredient2"));
 
-        when(cartService.addItemToCart(any(AddCartItemRequest.class))).thenReturn(responseDto);
+        when(cartService.addItemToCart(any(CartItemDTO.class))).thenReturn(responseDto);
 
         // Act & Assert
         mockMvc.perform(put("/api/cart/add")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.cartItemId").value(1))
                 .andExpect(jsonPath("$.foodId").value(1))
@@ -72,7 +71,7 @@ public class CartControllerTest {
                 .andExpect(jsonPath("$.ingredients[0]").value("ingredient1"))
                 .andExpect(jsonPath("$.ingredients[1]").value("ingredient2"));
 
-        verify(cartService, times(1)).addItemToCart(any(AddCartItemRequest.class));
+        verify(cartService, times(1)).addItemToCart(any(CartItemDTO.class));
     }
 
     @Test

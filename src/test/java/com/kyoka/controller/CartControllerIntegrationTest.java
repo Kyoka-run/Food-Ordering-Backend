@@ -2,7 +2,6 @@ package com.kyoka.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kyoka.util.AuthUtil;
-import com.kyoka.dto.AddCartItemRequest;
 import com.kyoka.dto.CartDTO;
 import com.kyoka.dto.CartItemDTO;
 import com.kyoka.model.User;
@@ -49,7 +48,6 @@ public class CartControllerIntegrationTest {
     private User testUser;
     private CartDTO testCartDTO;
     private CartItemDTO testCartItemDTO;
-    private AddCartItemRequest testAddCartItemRequest;
 
     @BeforeEach
     void setUp() {
@@ -76,22 +74,22 @@ public class CartControllerIntegrationTest {
         testCartDTO.setUserId(1L);
         testCartDTO.setItems(Arrays.asList(testCartItemDTO));
         testCartDTO.setTotal(20.0);
-
-        // Set up test add cart item request
-        testAddCartItemRequest = new AddCartItemRequest();
-        testAddCartItemRequest.setFoodId(1L);
-        testAddCartItemRequest.setQuantity(2);
-        testAddCartItemRequest.setIngredients(Arrays.asList("ingredient1", "ingredient2"));
     }
 
     @Test
     @WithMockUser
     void addItemToCart_ShouldReturnAddedCartItem() throws Exception {
-        when(cartService.addItemToCart(any(AddCartItemRequest.class))).thenReturn(testCartItemDTO);
+        // Create a request cart item DTO
+        CartItemDTO requestDto = new CartItemDTO();
+        requestDto.setFoodId(1L);
+        requestDto.setQuantity(2);
+        requestDto.setIngredients(Arrays.asList("ingredient1", "ingredient2"));
+
+        when(cartService.addItemToCart(any(CartItemDTO.class))).thenReturn(testCartItemDTO);
 
         mockMvc.perform(put("/api/cart/add")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testAddCartItemRequest)))
+                        .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.cartItemId", is(1)))
                 .andExpect(jsonPath("$.foodId", is(1)))

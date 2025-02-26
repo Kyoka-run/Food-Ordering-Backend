@@ -28,9 +28,6 @@ public class OrderServiceImpl implements OrderService {
     private RestaurantRepository restaurantRepository;
 
     @Autowired
-    private FoodRepository foodRepository;
-
-    @Autowired
     private AddressRepository addressRepository;
 
     @Autowired
@@ -44,18 +41,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public PaymentResponse createOrder(CreateOrderRequest request) throws StripeException {
+    public PaymentResponse createOrder(OrderDTO orderDTO) throws StripeException {
         User user = authUtil.loggedInUser();
 
-        Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
-                .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", request.getRestaurantId()));
+        Restaurant restaurant = restaurantRepository.findById(orderDTO.getRestaurantId())
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", orderDTO.getRestaurantId()));
 
         if (!restaurant.isOpen()) {
             throw new APIException("Restaurant is currently closed");
         }
 
-        Address address = addressRepository.findById(request.getAddressId())
-                .orElseThrow(() -> new ResourceNotFoundException("Address", "id", request.getAddressId()));
+        Address address = addressRepository.findById(orderDTO.getAddressId())
+                .orElseThrow(() -> new ResourceNotFoundException("Address", "id", orderDTO.getAddressId()));
 
         Order order = new Order();
         order.setUser(user);
@@ -66,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderItem> orderItems = new ArrayList<>();
 
-        order.setTotalAmount(request.getAmount());
+        order.setTotalAmount(orderDTO.getAmount());
         order.setItems(orderItems);
 
         Order savedOrder = orderRepository.save(order);
@@ -126,19 +123,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderItemDTO createOrderIem(CreateOrderItemRequest request) {
+    public OrderItemDTO createOrderItem(OrderItemDTO orderItemDTO) {
         OrderItem orderItem = new OrderItem();
-        orderItem.setQuantity(request.getQuantity());
+        orderItem.setQuantity(orderItemDTO.getQuantity());
         return modelMapper.map(orderItem, OrderItemDTO.class);
     }
 
     private boolean isValidOrderStatus(String status) {
         return status != null && (
                 status.equals("PENDING") ||
-                        status.equals("PREPARING") ||
-                        status.equals("READY") ||
-                        status.equals("OUT_FOR_DELIVERY") ||
-                        status.equals("DELIVERED") ||
+                        status.equals("COMPLETED") ||
                         status.equals("CANCELLED")
         );
     }

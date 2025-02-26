@@ -1,6 +1,5 @@
 package com.kyoka.controller;
 
-import com.kyoka.dto.CreateOrderRequest;
 import com.kyoka.dto.OrderDTO;
 import com.kyoka.dto.APIResponse;
 import com.kyoka.dto.PaymentResponse;
@@ -21,7 +20,7 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping("/order")
-    public ResponseEntity<PaymentResponse> createOrder(@RequestBody CreateOrderRequest request) throws StripeException {
+    public ResponseEntity<PaymentResponse> createOrder(@RequestBody OrderDTO request) throws StripeException {
         PaymentResponse paymentResponse = orderService.createOrder(request);
         return ResponseEntity.ok(paymentResponse);
     }

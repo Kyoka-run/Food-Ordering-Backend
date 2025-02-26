@@ -15,7 +15,7 @@ public class OrderDTO {
     private Long restaurantId;
     private String restaurantName;
     private List<OrderItemDTO> items;
-    private Double totalAmount;
+    private Double Amount;
     private String orderStatus;
     private String paymentStatus;
     private Long addressId;

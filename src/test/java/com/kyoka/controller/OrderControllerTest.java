@@ -3,7 +3,6 @@ package com.kyoka.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kyoka.dto.*;
 import com.kyoka.service.OrderService;
-import com.stripe.exception.StripeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,25 +43,25 @@ public class OrderControllerTest {
     @Test
     void createOrder_ShouldReturnPaymentResponse() throws Exception {
         // Arrange
-        CreateOrderRequest request = new CreateOrderRequest();
-        request.setRestaurantId(1L);
-        request.setAmount(100.0);
-        request.setAddressId(1L);
-        request.setPaymentMethod("CARD");
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setRestaurantId(1L);
+        orderDTO.setAmount(100.0);
+        orderDTO.setAddressId(1L);
+        orderDTO.setPaymentMethod("CARD");
 
         PaymentResponse paymentResponse = new PaymentResponse();
         paymentResponse.setPayment_url("https://stripe.com/payment/test");
 
-        when(orderService.createOrder(any(CreateOrderRequest.class))).thenReturn(paymentResponse);
+        when(orderService.createOrder(any(OrderDTO.class))).thenReturn(paymentResponse);
 
         // Act & Assert
         mockMvc.perform(post("/api/order")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(orderDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.payment_url").value("https://stripe.com/payment/test"));
 
-        verify(orderService, times(1)).createOrder(any(CreateOrderRequest.class));
+        verify(orderService, times(1)).createOrder(any(OrderDTO.class));
     }
 
     @Test
@@ -171,7 +170,7 @@ public class OrderControllerTest {
         dto.setRestaurantId(1L);
         dto.setRestaurantName("Test Restaurant");
         dto.setOrderStatus(status);
-        dto.setTotalAmount(amount);
+        dto.setAmount(amount);
         dto.setPaymentStatus("PENDING");
         dto.setAddressId(1L);
         dto.setPaymentMethod("CARD");

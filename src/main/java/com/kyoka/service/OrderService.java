@@ -6,7 +6,7 @@ import com.stripe.exception.StripeException;
 import java.util.List;
 
 public interface OrderService {
-    PaymentResponse createOrder(CreateOrderRequest request) throws StripeException;
+    PaymentResponse createOrder(OrderDTO orderDTO) throws StripeException;
 
     OrderDTO updateOrderStatus(Long orderId, String status);
 
@@ -16,5 +16,5 @@ public interface OrderService {
 
     void cancelOrder(Long orderId);
 
-    OrderItemDTO createOrderIem (CreateOrderItemRequest orderItemDTO);
+    OrderItemDTO createOrderItem (OrderItemDTO orderItemDTO);
 }

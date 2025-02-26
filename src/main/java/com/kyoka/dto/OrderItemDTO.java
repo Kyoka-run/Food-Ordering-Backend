@@ -13,6 +13,7 @@ public class OrderItemDTO {
     private Long orderItemId;
     private Long foodId;
     private String foodName;
+    private String foodImage;
     private int quantity;
     private Double totalPrice;
     private List<String> ingredients;

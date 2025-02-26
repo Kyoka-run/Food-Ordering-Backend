@@ -1,7 +1,6 @@
 package com.kyoka.service.impl;
 
 import com.kyoka.util.AuthUtil;
-import com.kyoka.dto.AddCartItemRequest;
 import com.kyoka.dto.CartDTO;
 import com.kyoka.dto.CartItemDTO;
 import com.kyoka.exception.ResourceNotFoundException;
@@ -38,11 +37,11 @@ public class CartServiceImpl implements CartService {
     private AuthUtil authUtil;
 
     @Override
-    public CartItemDTO addItemToCart(AddCartItemRequest request) {
+    public CartItemDTO addItemToCart(CartItemDTO cartItemDTO) {
         User user = authUtil.loggedInUser();
 
-        Food food = foodRepository.findById(request.getFoodId())
-                .orElseThrow(() -> new ResourceNotFoundException("Food", "id", request.getFoodId()));
+        Food food = foodRepository.findById(cartItemDTO.getFoodId())
+                .orElseThrow(() -> new ResourceNotFoundException("Food", "id", cartItemDTO.getFoodId()));
 
         Cart cart = cartRepository.findCartByUserId(user.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("Cart", "user id", user.getUserId()));
@@ -55,17 +54,17 @@ public class CartServiceImpl implements CartService {
         if (existingItem.isPresent()) {
             // Update quantity if item exists
             CartItem item = existingItem.get();
-            int newQuantity = item.getQuantity() + request.getQuantity();
+            int newQuantity = item.getQuantity() + cartItemDTO.getQuantity();
             return updateCartItemQuantity(item.getCartItemId(), newQuantity);
         }
 
         // Create new cart item if it doesn't exist
         CartItem newItem = new CartItem();
         newItem.setFood(food);
-        newItem.setQuantity(request.getQuantity());
+        newItem.setQuantity(cartItemDTO.getQuantity());
         newItem.setCart(cart);
-        newItem.setIngredients(request.getIngredients());
-        newItem.setTotalPrice(request.getQuantity() * food.getPrice());
+        newItem.setIngredients(cartItemDTO.getIngredients());
+        newItem.setTotalPrice(cartItemDTO.getQuantity() * food.getPrice());
 
         CartItem savedItem = cartItemRepository.save(newItem);
         cart.getItems().add(savedItem);

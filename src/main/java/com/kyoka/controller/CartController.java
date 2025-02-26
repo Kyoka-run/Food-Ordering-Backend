@@ -1,6 +1,5 @@
 package com.kyoka.controller;
 
-import com.kyoka.dto.AddCartItemRequest;
 import com.kyoka.dto.CartDTO;
 import com.kyoka.dto.CartItemDTO;
 import com.kyoka.service.CartService;
@@ -16,9 +15,9 @@ public class CartController {
     private CartService cartService;
 
     @PutMapping("/cart/add")
-    public ResponseEntity<CartItemDTO> addItemToCart(@RequestBody AddCartItemRequest req) {
-        CartItemDTO cartItemDTO = cartService.addItemToCart(req);
-        return ResponseEntity.ok(cartItemDTO);
+    public ResponseEntity<CartItemDTO> addItemToCart(@RequestBody CartItemDTO cartItemDTO) {
+        CartItemDTO addedItem = cartService.addItemToCart(cartItemDTO);
+        return ResponseEntity.ok(addedItem);
     }
 
     @PutMapping("/cart-item/update")

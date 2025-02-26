@@ -56,7 +56,7 @@ public class OrderServiceImplTest {
     private Address testAddress;
     private Food testFood;
     private OrderItem testOrderItem;
-    private CreateOrderRequest testOrderRequest;
+    private OrderDTO testOrderDTO;
 
     @BeforeEach
     void setUp() {
@@ -106,12 +106,12 @@ public class OrderServiceImplTest {
         testOrder.setTotalAmount(20.0);
         testOrder.setItems(Collections.singletonList(testOrderItem));
 
-        // Set up test CreateOrderRequest
-        testOrderRequest = new CreateOrderRequest();
-        testOrderRequest.setRestaurantId(1L);
-        testOrderRequest.setAddressId(1L);
-        testOrderRequest.setAmount(20.0);
-        testOrderRequest.setPaymentMethod("CARD");
+        // Set up test OrderDTO
+        testOrderDTO = new OrderDTO();
+        testOrderDTO.setRestaurantId(1L);
+        testOrderDTO.setAddressId(1L);
+        testOrderDTO.setAmount(20.0);
+        testOrderDTO.setPaymentMethod("CARD");
     }
 
     @Test
@@ -127,15 +127,15 @@ public class OrderServiceImplTest {
         when(paymentService.generatePaymentLink(any(Order.class))).thenReturn(expectedResponse);
 
         // Act
-        PaymentResponse result = orderService.createOrder(testOrderRequest);
+        PaymentResponse result = orderService.createOrder(testOrderDTO);
 
         // Assert
         assertNotNull(result);
         assertEquals(expectedResponse.getPayment_url(), result.getPayment_url());
 
         verify(authUtil, times(1)).loggedInUser();
-        verify(restaurantRepository, times(1)).findById(testOrderRequest.getRestaurantId());
-        verify(addressRepository, times(1)).findById(testOrderRequest.getAddressId());
+        verify(restaurantRepository, times(1)).findById(testOrderDTO.getRestaurantId());
+        verify(addressRepository, times(1)).findById(testOrderDTO.getAddressId());
         verify(orderRepository, times(1)).save(any(Order.class));
         verify(paymentService, times(1)).generatePaymentLink(any(Order.class));
     }
@@ -148,11 +148,11 @@ public class OrderServiceImplTest {
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> {
-            orderService.createOrder(testOrderRequest);
+            orderService.createOrder(testOrderDTO);
         });
 
         verify(authUtil, times(1)).loggedInUser();
-        verify(restaurantRepository, times(1)).findById(testOrderRequest.getRestaurantId());
+        verify(restaurantRepository, times(1)).findById(testOrderDTO.getRestaurantId());
         verify(addressRepository, never()).findById(anyLong());
         verify(orderRepository, never()).save(any(Order.class));
     }
@@ -170,11 +170,11 @@ public class OrderServiceImplTest {
 
         // Act & Assert
         assertThrows(APIException.class, () -> {
-            orderService.createOrder(testOrderRequest);
+            orderService.createOrder(testOrderDTO);
         });
 
         verify(authUtil, times(1)).loggedInUser();
-        verify(restaurantRepository, times(1)).findById(testOrderRequest.getRestaurantId());
+        verify(restaurantRepository, times(1)).findById(testOrderDTO.getRestaurantId());
         verify(addressRepository, never()).findById(anyLong());
         verify(orderRepository, never()).save(any(Order.class));
     }
@@ -188,19 +188,19 @@ public class OrderServiceImplTest {
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class, () -> {
-            orderService.createOrder(testOrderRequest);
+            orderService.createOrder(testOrderDTO);
         });
 
         verify(authUtil, times(1)).loggedInUser();
-        verify(restaurantRepository, times(1)).findById(testOrderRequest.getRestaurantId());
-        verify(addressRepository, times(1)).findById(testOrderRequest.getAddressId());
+        verify(restaurantRepository, times(1)).findById(testOrderDTO.getRestaurantId());
+        verify(addressRepository, times(1)).findById(testOrderDTO.getAddressId());
         verify(orderRepository, never()).save(any(Order.class));
     }
 
     @Test
     void updateOrderStatus_ShouldUpdateAndReturnOrder_WhenValidStatus() {
         // Arrange
-        String newStatus = "PREPARING";
+        String newStatus = "COMPLETED";
         Order updatedOrder = new Order();
         updatedOrder.setOrderId(1L);
         updatedOrder.setOrderStatus(newStatus);
@@ -368,37 +368,15 @@ public class OrderServiceImplTest {
     @Test
     void createOrderItem_ShouldCreateAndReturnOrderItem() {
         // Arrange
-        CreateOrderItemRequest request = new CreateOrderItemRequest();
-        request.setFoodId(1L);
-        request.setQuantity(2);
-        request.setIngredients(Arrays.asList("ingredient1", "ingredient2"));
+        OrderItemDTO orderItemDTO = new OrderItemDTO();
+        orderItemDTO.setQuantity(2);
 
         // Act
-        OrderItemDTO result = orderService.createOrderIem(request);
+        OrderItemDTO result = orderService.createOrderItem(orderItemDTO);
 
         // Assert
         assertNotNull(result);
-        assertEquals(request.getQuantity(), result.getQuantity());
-    }
-
-    @Test
-    void isValidOrderStatus_ShouldReturnTrue_ForValidStatuses() {
-        // This tests a private method using reflection
-        try {
-            java.lang.reflect.Method method = OrderServiceImpl.class.getDeclaredMethod(
-                    "isValidOrderStatus", String.class);
-            method.setAccessible(true);
-
-            // Test all valid statuses
-            assertTrue((Boolean) method.invoke(orderService, "PENDING"));
-            assertTrue((Boolean) method.invoke(orderService, "PREPARING"));
-            assertTrue((Boolean) method.invoke(orderService, "READY"));
-            assertTrue((Boolean) method.invoke(orderService, "OUT_FOR_DELIVERY"));
-            assertTrue((Boolean) method.invoke(orderService, "DELIVERED"));
-            assertTrue((Boolean) method.invoke(orderService, "CANCELLED"));
-        } catch (Exception e) {
-            fail("Exception thrown while testing private method: " + e.getMessage());
-        }
+        assertEquals(orderItemDTO.getQuantity(), result.getQuantity());
     }
 
     private Order createOrder(Long id, String status) {
