@@ -25,6 +25,9 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
+    private FoodRepository foodRepository;
+
+    @Autowired
     private RestaurantRepository restaurantRepository;
 
     @Autowired
@@ -60,14 +63,27 @@ public class OrderServiceImpl implements OrderService {
         order.setDeliveryAddress(address);
         order.setOrderStatus("PENDING");
         order.setCreatedAt(new Date());
-
-        System.out.println(orderDTO.getItems());
-
-        List<OrderItem> orderItems = orderDTO.getItems().stream()
-                .map(orderItemDTO -> modelMapper.map(orderItemDTO, OrderItem.class))
-                .toList();
-
         order.setAmount(orderDTO.getAmount());
+
+
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        for (OrderItemDTO itemDTO : orderDTO.getItems()) {
+            OrderItem item = new OrderItem();
+
+            item.setQuantity(itemDTO.getQuantity());
+            item.setTotalPrice(itemDTO.getTotalPrice());
+            item.setIngredients(itemDTO.getIngredients());
+
+            Food food = foodRepository.findById(itemDTO.getFoodId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Food", "id", itemDTO.getFoodId()));
+            item.setFood(food);
+
+            item.setOrder(order);
+
+            orderItems.add(item);
+        }
+
         order.setItems(orderItems);
 
         Order savedOrder = orderRepository.save(order);

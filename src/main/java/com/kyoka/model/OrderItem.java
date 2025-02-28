@@ -28,6 +28,7 @@ public class OrderItem {
     @ElementCollection
     private List<String> ingredients;
 
+    @JsonIgnore
     @ManyToOne
     private Order order;
 }

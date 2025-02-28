@@ -19,6 +19,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
 
+    @JsonIgnore
     @ManyToOne
     private User user;
 
@@ -36,7 +37,7 @@ public class Order {
     @ManyToOne
     private Address deliveryAddress;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER )
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER )
     private List<OrderItem> items;
 
     @OneToOne
