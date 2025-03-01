@@ -2,10 +2,8 @@ package com.kyoka.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.kyoka.dto.NotificationDTO;
 import com.kyoka.model.Restaurant;
 import com.kyoka.model.User;
-import com.kyoka.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

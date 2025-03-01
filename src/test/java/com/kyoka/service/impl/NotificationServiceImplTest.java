@@ -1,11 +1,8 @@
 package com.kyoka.service.impl;
 
 import com.kyoka.util.AuthUtil;
-import com.kyoka.dto.NotificationDTO;
-import com.kyoka.model.Notification;
 import com.kyoka.model.Restaurant;
 import com.kyoka.model.User;
-import com.kyoka.repository.NotificationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
