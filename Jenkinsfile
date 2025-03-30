@@ -8,8 +8,8 @@ pipeline {
         DB_HOST = 'database-food-ordering.ctmcuac0g16u.eu-west-1.rds.amazonaws.com'
         DB_PORT = '3306'
         DB_NAME = 'database-food-ordering'
-        DB_USERNAME = credentials('root')
-        DB_PASSWORD = credentials('Cinder1014')
+        DB_USERNAME = 'root'
+        DB_PASSWORD = 'Cinder1014'
     }
     
     stages {
