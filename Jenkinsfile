@@ -18,62 +18,66 @@ pipeline {
                 checkout scm
             }
         }
-        
+
         stage('Build Maven Project') {
             steps {
-                sh 'mvn clean package -DskipTests'
+                bat 'mvn clean package -DskipTests'
             }
         }
-        
+
 //         stage('Run Tests') {
 //             steps {
-//                 sh 'mvn test'
+//                 bat 'mvn test'
 //             }
 //         }
-        
+
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${BACKEND_IMAGE} ."
+                bat "docker build -t ${BACKEND_IMAGE} ."
             }
         }
-        
+
         stage('Login to DockerHub') {
-            steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                steps {
+                        withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKERHUB_PSW', usernameVariable: 'DOCKERHUB_USR')]) {
+                            bat 'echo %DOCKERHUB_PSW%| docker login -u %DOCKERHUB_USR% --password-stdin'
+                        }
+                    }
+                }
+
+                stage('Push Docker Image') {
+                    steps {
+                        bat "docker push ${BACKEND_IMAGE}"
+                    }
+                }
+
+                stage('Deploy Container') {
+                    steps {
+                        bat "docker stop ${BACKEND_CONTAINER} || exit 0"
+                        bat "docker rm ${BACKEND_CONTAINER} || exit 0"
+                        bat """
+                            docker run -d -p 8080:8080 ^
+                            -e DB_HOST=${DB_HOST} ^
+                            -e DB_PORT=${DB_PORT} ^
+                            -e DB_NAME=${DB_NAME} ^
+                            -e DB_USERNAME=%DB_USERNAME% ^
+                            -e DB_PASSWORD=%DB_PASSWORD% ^
+                            --name ${BACKEND_CONTAINER} ^
+                            ${BACKEND_IMAGE}
+                        """
+                    }
+                }
+            }
+
+            post {
+                always {
+                    bat 'docker logout'
+                }
+                success {
+                    echo 'Backend deployment successful!'
+                }
+                failure {
+                    echo 'Backend deployment failed!'
+                }
             }
         }
-        
-        stage('Push Docker Image') {
-            steps {
-                sh "docker push ${BACKEND_IMAGE}"
-            }
-        }
-        
-        stage('Deploy Container') {
-            steps {
-                sh """
-                    docker stop ${BACKEND_CONTAINER} || true
-                    docker rm ${BACKEND_CONTAINER} || true
-                    docker run -d -p 8080:8080 \
-                    -e DB_HOST=${DB_HOST} \
-                    -e DB_PORT=${DB_PORT} \
-                    -e DB_NAME=${DB_NAME} \
-                    -e DB_USERNAME=${DB_USERNAME} \
-                    -e DB_PASSWORD=${DB_PASSWORD} \
-                    --name ${BACKEND_CONTAINER} \
-                    ${BACKEND_IMAGE}
-                """
-            }
-        }
-    }
-    
-    post {
-        success {
-            sh 'docker logout'
-            echo 'Backend deployment successful!'
-        }
-        failure {
-            echo 'Backend deployment failed!'
-        }
-    }
-}
