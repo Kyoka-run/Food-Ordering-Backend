@@ -1,6 +1,7 @@
 package com.kyoka.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kyoka.dto.UserDTO;
 import com.kyoka.model.AppRole;
 import com.kyoka.model.Role;
 import com.kyoka.model.User;
@@ -36,49 +37,30 @@ public class SuperAdminControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private List<User> testUsers;
+    private List<UserDTO> testUserDTOs;
 
     @BeforeEach
     void setUp() {
-        // Create roles
-        Set<Role> customerRoles = new HashSet<>();
-        Role customerRole = new Role();
-        customerRole.setRoleId(1);
-        customerRole.setRoleName(AppRole.ROLE_CUSTOMER);
-        customerRoles.add(customerRole);
-
-        Set<Role> ownerRoles = new HashSet<>();
-        Role ownerRole = new Role();
-        ownerRole.setRoleId(2);
-        ownerRole.setRoleName(AppRole.ROLE_RESTAURANT_OWNER);
-        ownerRoles.add(ownerRole);
-
-        // Create test users
-        User customer = new User();
+        // Create test user DTOs
+        UserDTO customer = new UserDTO();
         customer.setUserId(1L);
-        customer.setUserName("customer");
+        customer.setUsername("customer");
         customer.setEmail("customer@example.com");
-        customer.setRoles(customerRoles);
+        customer.setRoles(Arrays.asList("ROLE_CUSTOMER"));
 
-        User owner = new User();
+        UserDTO owner = new UserDTO();
         owner.setUserId(2L);
-        owner.setUserName("owner");
+        owner.setUsername("owner");
         owner.setEmail("owner@example.com");
-        owner.setRoles(ownerRoles);
+        owner.setRoles(Arrays.asList("ROLE_RESTAURANT_OWNER"));
 
-        testUsers = Arrays.asList(customer, owner);
+        testUserDTOs = Arrays.asList(customer, owner);
     }
 
     @Test
     @WithMockUser(roles = "ADMIN")
     void getAllCustomers_ShouldReturnUsersList() throws Exception {
-        when(userService.findAllUsers()).thenReturn(testUsers);
-
-        // Since we're testing model mapper in a complex scenario, we'll mock at a different level
-        // We need to keep the controller's ModelMapper autowiring and instead mock the findAllUsers() method
-        // to return a pre-mapped DTO list or have the actual model mapping happen.
-
-        // This works because the real ModelMapper will map our test Users to UserDTOs
+        when(userService.findAllUsers()).thenReturn(testUserDTOs);
 
         mockMvc.perform(get("/api/customers"))
                 .andExpect(status().isOk())

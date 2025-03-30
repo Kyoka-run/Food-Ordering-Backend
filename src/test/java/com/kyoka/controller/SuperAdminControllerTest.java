@@ -31,9 +31,6 @@ public class SuperAdminControllerTest {
     @Mock
     private UserService userService;
 
-    @Mock
-    private ModelMapper modelMapper;
-
     @InjectMocks
     private SuperAdminController superAdminController;
 
@@ -49,19 +46,12 @@ public class SuperAdminControllerTest {
     @Test
     void getAllCustomers_ShouldReturnListOfUsers() throws Exception {
         // Arrange
-        List<User> users = Arrays.asList(
-                createUser(1L, "user1", "user1@example.com", "ROLE_CUSTOMER"),
-                createUser(2L, "user2", "user2@example.com", "ROLE_CUSTOMER")
-        );
-
         List<UserDTO> userDTOs = Arrays.asList(
                 createUserDTO(1L, "user1", "user1@example.com", Arrays.asList("ROLE_CUSTOMER")),
                 createUserDTO(2L, "user2", "user2@example.com", Arrays.asList("ROLE_CUSTOMER"))
         );
 
-        when(userService.findAllUsers()).thenReturn(users);
-        when(modelMapper.map(any(User.class), eq(UserDTO.class)))
-                .thenReturn(userDTOs.get(0), userDTOs.get(1));
+        when(userService.findAllUsers()).thenReturn(userDTOs);
 
         // Act & Assert
         mockMvc.perform(get("/api/customers"))
@@ -76,7 +66,6 @@ public class SuperAdminControllerTest {
                 .andExpect(jsonPath("$[1].email").value("user2@example.com"));
 
         verify(userService, times(1)).findAllUsers();
-        verify(modelMapper, times(2)).map(any(User.class), eq(UserDTO.class));
     }
 
     @Test
@@ -91,22 +80,6 @@ public class SuperAdminControllerTest {
                 .andExpect(jsonPath("$.length()").value(0));
 
         verify(userService, times(1)).findAllUsers();
-        verify(modelMapper, never()).map(any(), any());
-    }
-
-    private User createUser(Long id, String username, String email, String roleName) {
-        User user = new User();
-        user.setUserId(id);
-        user.setUserName(username);
-        user.setEmail(email);
-
-        Set<Role> roles = new HashSet<>();
-        Role role = new Role();
-        role.setRoleName(AppRole.valueOf(roleName));
-        roles.add(role);
-        user.setRoles(roles);
-
-        return user;
     }
 
     private UserDTO createUserDTO(Long id, String username, String email, List<String> roles) {

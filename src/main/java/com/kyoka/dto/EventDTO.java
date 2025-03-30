@@ -17,4 +17,5 @@ public class EventDTO {
     private LocalDateTime endTime;
     private String location;
     private Long restaurantId;
+    private String restaurantName;
 }

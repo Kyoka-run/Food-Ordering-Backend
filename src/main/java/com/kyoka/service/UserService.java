@@ -2,13 +2,13 @@ package com.kyoka.service;
 
 import java.util.List;
 
+import com.kyoka.dto.UserDTO;
 import com.kyoka.exception.ResourceNotFoundException;
-import com.kyoka.model.User;
 
 public interface UserService {
-    User findUserByEmail(String email) throws ResourceNotFoundException;
+    UserDTO findUserByEmail(String email);
 
-    List<User> findAllUsers();
+    List<UserDTO> findAllUsers();
 
 //    void updatePassword(User user, String newPassword);
 

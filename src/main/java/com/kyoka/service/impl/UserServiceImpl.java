@@ -2,11 +2,13 @@ package com.kyoka.service.impl;
 
 import java.util.*;
 
+import com.kyoka.dto.UserDTO;
 import com.kyoka.model.PasswordResetToken;
 import com.kyoka.model.User;
 import com.kyoka.repository.PasswordResetTokenRepository;
 import com.kyoka.repository.UserRepository;
 import com.kyoka.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
+    private ModelMapper modelMapper;
 //    private PasswordEncoder passwordEncoder;
 //    private PasswordResetTokenRepository passwordResetTokenRepository;
 //    private JavaMailSender javaMailSender;
@@ -28,13 +31,17 @@ public class UserServiceImpl implements UserService {
 //    }
 
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper) {
         this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> findAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(user -> modelMapper.map(user, UserDTO.class))
+                .toList();
     }
 
 //    @Override
@@ -81,12 +88,10 @@ public class UserServiceImpl implements UserService {
 //    }
 
     @Override
-    public User findUserByEmail(String email) throws UsernameNotFoundException {
+    public UserDTO findUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + email));
-        if (user != null) {
-            return user;
-        }
-        throw new UsernameNotFoundException("User Not Found with email: " + email);
+
+        return modelMapper.map(user, UserDTO.class);
     }
 }

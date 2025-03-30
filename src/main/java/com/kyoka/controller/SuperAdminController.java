@@ -25,10 +25,7 @@ public class SuperAdminController {
 
     @GetMapping("/customers")
     public ResponseEntity<List<UserDTO>> getAllCustomers() {
-        List<User> users = userService.findAllUsers();
-        List<UserDTO> userDTOs = users.stream()
-                .map(user -> modelMapper.map(user, UserDTO.class))
-                .toList();
+        List<UserDTO> userDTOs = userService.findAllUsers();
         return new ResponseEntity<>(userDTOs, HttpStatus.OK);
     }
 }
