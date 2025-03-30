@@ -68,10 +68,8 @@ pipeline {
     }
     
     post {
-        always {
-            sh 'docker logout'
-        }
         success {
+            sh 'docker logout'
             echo 'Backend deployment successful!'
         }
         failure {
