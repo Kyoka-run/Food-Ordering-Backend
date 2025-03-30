@@ -5,6 +5,11 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         BACKEND_IMAGE = "kyoka74022/food-ordering-backend:${BUILD_NUMBER}"
         BACKEND_CONTAINER = "food-ordering-backend"
+        DB_HOST = 'database-food-ordering.ctmcuac0g16u.eu-west-1.rds.amazonaws.com'
+        DB_PORT = '3306'
+        DB_NAME = 'database-food-ordering'
+        DB_USERNAME = credentials('root')
+        DB_PASSWORD = credentials('Cinder1014')
     }
     
     stages {
