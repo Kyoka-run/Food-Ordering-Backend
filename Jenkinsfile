@@ -72,16 +72,17 @@ pipeline {
                 """
             }
         }
+    }
 
-            post {
-                always {
-                    bat 'docker logout'
-                }
-                success {
-                    echo 'Backend deployment successful!'
-                }
-                failure {
-                    echo 'Backend deployment failed!'
-                }
-            }
+    post {
+        always {
+            bat 'docker logout'
         }
+        success {
+            echo 'Backend deployment successful!'
+        }
+        failure {
+            echo 'Backend deployment failed!'
+        }
+    }
+}
