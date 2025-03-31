@@ -3,7 +3,6 @@ pipeline {
     
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
-        EC2_SSH_KEY = 'C:\\codes\\My aws keypair.pem'
         EC2_USER = 'ubuntu'
         EC2_HOST = '54.171.153.174'
         BACKEND_IMAGE = "kyoka74022/food-ordering-backend:${BUILD_NUMBER}"
@@ -14,7 +13,7 @@ pipeline {
         DB_USERNAME = 'root'
         DB_PASSWORD = 'Cinder1014'
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
@@ -27,12 +26,6 @@ pipeline {
                 bat 'mvn clean package -DskipTests'
             }
         }
-
-//         stage('Run Tests') {
-//             steps {
-//                 bat 'mvn test'
-//             }
-//         }
 
         stage('Build Docker Image') {
             steps {
@@ -48,7 +41,7 @@ pipeline {
             }
         }
 
-         stage('Push Docker Image') {
+        stage('Push Docker Image') {
             steps {
                 bat "docker push ${BACKEND_IMAGE}"
             }
@@ -56,20 +49,18 @@ pipeline {
 
         stage('Deploy to EC2') {
             steps {
-                // Install OpenSSH if needed
-                bat 'where ssh > nul 2>&1 || echo "OpenSSH not found. Please install OpenSSH on the Jenkins server."'
-
-                // Use SSH to deploy to EC2
-                bat """
-                    echo "Deploying to EC2..."
-
-                    rem Fix permissions on SSH key
-                    icacls "${EC2_SSH_KEY}" /inheritance:r
-                    icacls "${EC2_SSH_KEY}" /grant:r "%USERNAME%:R"
-
-                    rem Connect to EC2 and deploy
-                    ssh -o StrictHostKeyChecking=no -i "${EC2_SSH_KEY}" ${EC2_USER}@${EC2_HOST} "sudo docker login -u kyoka74022 -p Cinder1014 && sudo docker pull ${BACKEND_IMAGE} && sudo docker stop ${BACKEND_CONTAINER} || true && sudo docker rm ${BACKEND_CONTAINER} || true && sudo docker run -d -p 8080:8080 -e DB_HOST=${DB_HOST} -e DB_PORT=${DB_PORT} -e DB_NAME=${DB_NAME} -e DB_USERNAME=${DB_USERNAME} -e DB_PASSWORD=${DB_PASSWORD} --name ${BACKEND_CONTAINER} ${BACKEND_IMAGE}"
-                """
+                sshagent(['ec2-ssh-key']) {
+                    // Connect to EC2 and deploy
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} '
+                            sudo docker login -u kyoka74022 -p Cinder1014 &&
+                            sudo docker pull ${BACKEND_IMAGE} &&
+                            sudo docker stop ${BACKEND_CONTAINER} || true &&
+                            sudo docker rm ${BACKEND_CONTAINER} || true &&
+                            sudo docker run -d -p 8080:8080 -e DB_HOST=${DB_HOST} -e DB_PORT=${DB_PORT} -e DB_NAME=${DB_NAME} -e DB_USERNAME=${DB_USERNAME} -e DB_PASSWORD=${DB_PASSWORD} --name ${BACKEND_CONTAINER} ${BACKEND_IMAGE}
+                        '
+                    """
+                }
             }
         }
     }
