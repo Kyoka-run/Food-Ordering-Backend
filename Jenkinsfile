@@ -49,18 +49,25 @@ pipeline {
 
         stage('Deploy to EC2') {
             steps {
-                sshagent(['ec2-ssh-key']) {
-                    // Connect to EC2 and deploy
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} '
-                            sudo docker login -u kyoka74022 -p Cinder1014 &&
-                            sudo docker pull ${BACKEND_IMAGE} &&
-                            sudo docker stop ${BACKEND_CONTAINER} || true &&
-                            sudo docker rm ${BACKEND_CONTAINER} || true &&
-                            sudo docker run -d -p 8080:8080 -e DB_HOST=${DB_HOST} -e DB_PORT=${DB_PORT} -e DB_NAME=${DB_NAME} -e DB_USERNAME=${DB_USERNAME} -e DB_PASSWORD=${DB_PASSWORD} --name ${BACKEND_CONTAINER} ${BACKEND_IMAGE}
-                        '
+                // Create a temporary SSH key file
+                bat 'if not exist "%WORKSPACE%\\temp" mkdir "%WORKSPACE%\\temp"'
+
+                // Write the SSH private key to a temporary file (Jenkins credential)
+                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'KEY_FILE')]) {
+                    bat '''
+                        copy "%KEY_FILE%" "%WORKSPACE%\\temp\\ec2_key.pem"
+                        icacls "%WORKSPACE%\\temp\\ec2_key.pem" /inheritance:r
+                        icacls "%WORKSPACE%\\temp\\ec2_key.pem" /grant:r "%USERNAME%:R"
+                    '''
+
+                    // Execute the SSH command to deploy to EC2
+                    bat """
+                        ssh -o StrictHostKeyChecking=no -i "%WORKSPACE%\\temp\\ec2_key.pem" ${EC2_USER}@${EC2_HOST} "sudo docker login -u kyoka74022 -p Cinder1014 && sudo docker pull ${BACKEND_IMAGE} && sudo docker stop ${BACKEND_CONTAINER} || true && sudo docker rm ${BACKEND_CONTAINER} || true && sudo docker run -d -p 8080:8080 -e DB_HOST=${DB_HOST} -e DB_PORT=${DB_PORT} -e DB_NAME=${DB_NAME} -e DB_USERNAME=${DB_USERNAME} -e DB_PASSWORD=${DB_PASSWORD} --name ${BACKEND_CONTAINER} ${BACKEND_IMAGE}"
                     """
                 }
+
+                // Clean up the temporary key file
+                bat 'del /q "%WORKSPACE%\\temp\\ec2_key.pem"'
             }
         }
     }
