@@ -49,17 +49,23 @@ pipeline {
 
         stage('Deploy to EC2') {
             steps {
-                sshagent(['ec2-ssh-key']) {
-                    // Connect to EC2 and deploy
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} '
-                            sudo docker login -u kyoka74022 -p Cinder1014 &&
-                            sudo docker pull ${BACKEND_IMAGE} &&
-                            sudo docker stop ${BACKEND_CONTAINER} || true &&
-                            sudo docker rm ${BACKEND_CONTAINER} || true &&
-                            sudo docker run -d -p 8080:8080 -e DB_HOST=${DB_HOST} -e DB_PORT=${DB_PORT} -e DB_NAME=${DB_NAME} -e DB_USERNAME=${DB_USERNAME} -e DB_PASSWORD=${DB_PASSWORD} --name ${BACKEND_CONTAINER} ${BACKEND_IMAGE}
-                        '
-                    """
+                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'SSH_KEY')]) {
+                    // Create a temporary PowerShell script to handle the SSH command
+                    powershell '''
+                        $keyPath = $env:SSH_KEY
+
+                        # Create a simple SSH command to run the Docker commands
+                        $sshCommand = "ssh -i `"$keyPath`" -o StrictHostKeyChecking=no ${env:EC2_USER}@${env:EC2_HOST} 'sudo docker login -u kyoka74022 -p Cinder1014 && sudo docker pull ${env:BACKEND_IMAGE} && sudo docker stop ${env:BACKEND_CONTAINER} || true && sudo docker rm ${env:BACKEND_CONTAINER} || true && sudo docker run -d -p 8080:8080 -e DB_HOST=${env:DB_HOST} -e DB_PORT=${env:DB_PORT} -e DB_NAME=${env:DB_NAME} -e DB_USERNAME=${env:DB_USERNAME} -e DB_PASSWORD=${env:DB_PASSWORD} --name ${env:BACKEND_CONTAINER} ${env:BACKEND_IMAGE}'"
+
+                        # Execute the SSH command
+                        Invoke-Expression $sshCommand
+
+                        # Check if the command was successful
+                        if ($LASTEXITCODE -ne 0) {
+                            Write-Error "SSH command failed with exit code: $LASTEXITCODE"
+                            exit 1
+                        }
+                    '''
                 }
             }
         }
