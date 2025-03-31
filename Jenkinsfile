@@ -49,27 +49,36 @@ pipeline {
 
         stage('Deploy to EC2') {
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'SSH_KEY')]) {
-                    powershell """
-                        # Create .ssh directory if it doesn't exist
-                        if (!(Test-Path "\$env:USERPROFILE\\.ssh")) {
-                            New-Item -Path "\$env:USERPROFILE\\.ssh" -ItemType Directory
+                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'KEY_FILE')]) {
+                    powershell '''
+                        # Create a temporary key file in the workspace
+                        $keyContent = Get-Content -Path $env:KEY_FILE
+                        $tempKeyPath = "$env:WORKSPACE\\temp_key.pem"
+
+                        # Write the key to a temporary file
+                        Set-Content -Path $tempKeyPath -Value $keyContent
+
+                        # Use the key for SSH
+                        $deployCommand = "sudo docker login -u kyoka74022 -p Cinder1014 && " +
+                                        "sudo docker pull $env:BACKEND_IMAGE && " +
+                                        "sudo docker stop $env:BACKEND_CONTAINER || true && " +
+                                        "sudo docker rm $env:BACKEND_CONTAINER || true && " +
+                                        "sudo docker run -d -p 8080:8080 " +
+                                        "-e DB_HOST=$env:DB_HOST " +
+                                        "-e DB_PORT=$env:DB_PORT " +
+                                        "-e DB_NAME=$env:DB_NAME " +
+                                        "-e DB_USERNAME=$env:DB_USERNAME " +
+                                        "-e DB_PASSWORD=$env:DB_PASSWORD " +
+                                        "--name $env:BACKEND_CONTAINER $env:BACKEND_IMAGE"
+
+                        # Execute the SSH command
+                        ssh -o StrictHostKeyChecking=no -i $tempKeyPath "$env:EC2_USER@$env:EC2_HOST" $deployCommand
+
+                        # Clean up regardless of success/failure
+                        if (Test-Path $tempKeyPath) {
+                            Remove-Item -Path $tempKeyPath -Force
                         }
-
-                        # Copy the key to the standard SSH location
-                        \$key = Get-Content "${SSH_KEY}"
-                        Set-Content -Path "\$env:USERPROFILE\\.ssh\\id_rsa" -Value \$key
-
-                        # Set proper permissions on the key file
-                        icacls "\$env:USERPROFILE\\.ssh\\id_rsa" /inheritance:r
-                        icacls "\$env:USERPROFILE\\.ssh\\id_rsa" /grant:r "\$env:USERNAME:(R)"
-
-                        # Deploy using SSH
-                        ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "sudo docker login -u kyoka74022 -p Cinder1014 && sudo docker pull ${BACKEND_IMAGE} && sudo docker stop ${BACKEND_CONTAINER} || true && sudo docker rm ${BACKEND_CONTAINER} || true && sudo docker run -d -p 8080:8080 -e DB_HOST=${DB_HOST} -e DB_PORT=${DB_PORT} -e DB_NAME=${DB_NAME} -e DB_USERNAME=${DB_USERNAME} -e DB_PASSWORD=${DB_PASSWORD} --name ${BACKEND_CONTAINER} ${BACKEND_IMAGE}"
-
-                        # Clean up by removing the key
-                        Remove-Item "\$env:USERPROFILE\\.ssh\\id_rsa" -Force
-                    """
+                    '''
                 }
             }
         }
