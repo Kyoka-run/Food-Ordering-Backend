@@ -8,7 +8,7 @@ The project consists of two main repositories:
 - Frontend Repository: [`Frontend`][frontend]
 
 Try application here:
-[`Food Odering Saystem`][demo]
+[`Food Odering System`][demo]
 
 [backend]: https://github.com/Kyoka-run/Food-Ordering-Backend
 [frontend]: https://github.com/Kyoka-run/Food-Ordering-Frontend
