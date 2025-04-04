@@ -7,11 +7,6 @@ pipeline {
         EC2_HOST = '54.171.153.174'
         BACKEND_IMAGE = "kyoka74022/food-ordering-backend:${BUILD_NUMBER}"
         BACKEND_CONTAINER = "food-ordering-backend"
-        DB_HOST = 'database-food-ordering.ctmcuac0g16u.eu-west-1.rds.amazonaws.com'
-        DB_PORT = '3306'
-        DB_NAME = 'database-food-ordering'
-        DB_USERNAME = 'root'
-        DB_PASSWORD = 'Cinder1014'
     }
 
     stages {
@@ -49,23 +44,28 @@ pipeline {
 
         stage('Deploy to EC2') {
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'SSH_KEY')]) {
-                    // Create a temporary PowerShell script to handle the SSH command
-                    powershell '''
-                        $keyPath = $env:SSH_KEY
+                withCredentials([
+                    sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'SSH_KEY')
+                ]) {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKERHUB_PSW', usernameVariable: 'DOCKERHUB_USR')]) {
+                        powershell '''
+                            $keyPath = $env:SSH_KEY
+                            $dockerUser = $env:DOCKERHUB_USR
+                            $dockerPass = $env:DOCKERHUB_PSW
 
-                        # Create a simple SSH command to run the Docker commands
-                        $sshCommand = "ssh -i `"$keyPath`" -o StrictHostKeyChecking=no ${env:EC2_USER}@${env:EC2_HOST} 'sudo docker login -u kyoka74022 -p Cinder1014 && sudo docker pull ${env:BACKEND_IMAGE} && sudo docker stop ${env:BACKEND_CONTAINER} || true && sudo docker rm ${env:BACKEND_CONTAINER} || true && sudo docker run -d -p 8080:8080 -e DB_HOST=${env:DB_HOST} -e DB_PORT=${env:DB_PORT} -e DB_NAME=${env:DB_NAME} -e DB_USERNAME=${env:DB_USERNAME} -e DB_PASSWORD=${env:DB_PASSWORD} --name ${env:BACKEND_CONTAINER} ${env:BACKEND_IMAGE}'"
+                            # Create a simple SSH command to run the Docker commands
+                            $sshCommand = "ssh -i `"$keyPath`" -o StrictHostKeyChecking=no ${env:EC2_USER}@${env:EC2_HOST} 'echo $dockerPass | sudo docker login -u $dockerUser --password-stdin && sudo docker pull ${env:BACKEND_IMAGE} && sudo docker stop ${env:BACKEND_CONTAINER} || true && sudo docker rm ${env:BACKEND_CONTAINER} || true && sudo docker run -d -p 8080:8080 --name ${env:BACKEND_CONTAINER} ${env:BACKEND_IMAGE}'"
 
-                        # Execute the SSH command
-                        Invoke-Expression $sshCommand
+                            # Execute the SSH command
+                            Invoke-Expression $sshCommand
 
-                        # Check if the command was successful
-                        if ($LASTEXITCODE -ne 0) {
-                            Write-Error "SSH command failed with exit code: $LASTEXITCODE"
-                            exit 1
-                        }
-                    '''
+                            # Check if the command was successful
+                            if ($LASTEXITCODE -ne 0) {
+                                Write-Error "SSH command failed with exit code: $LASTEXITCODE"
+                                exit 1
+                            }
+                        '''
+                    }
                 }
             }
         }
