@@ -21,6 +21,7 @@ public class Restaurant {
 
     @OneToOne
     @JoinColumn(name = "owner_id")
+    @JsonIgnore
     private User owner;
 
     @ManyToMany(mappedBy = "favoriteRestaurants")
