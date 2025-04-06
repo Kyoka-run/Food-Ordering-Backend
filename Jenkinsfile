@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
         EC2_USER = 'ec2-user'
-        EC2_HOST = '54.171.153.174'
+        EC2_HOST = '54.155.143.45'
         BACKEND_IMAGE = "kyoka74022/food-ordering-backend:${BUILD_NUMBER}"
         BACKEND_CONTAINER = "food-ordering-backend"
     }
