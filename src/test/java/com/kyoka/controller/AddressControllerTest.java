@@ -76,8 +76,8 @@ public class AddressControllerTest {
     void getUserAddresses_ShouldReturnListOfAddresses() throws Exception {
         // Arrange
         List<AddressDTO> addresses = Arrays.asList(
-                new AddressDTO("123 Test St", "Test City", "Test Country", "12345"),
-                new AddressDTO("456 Sample St", "Sample City", "Sample Country", "67890")
+                new AddressDTO(1L,"123 Test St", "Test City", "Test Country", "12345"),
+                new AddressDTO(2L,"456 Sample St", "Sample City", "Sample Country", "67890")
         );
 
         when(addressService.getUserAddresses()).thenReturn(addresses);
