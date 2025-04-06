@@ -134,19 +134,26 @@ npm run dev
 
 ## 🖼️ Application Screenshots
 
-### Customer Interface
-- Restaurant Browsing
-- Food Ordering Process
-- Cart Management
-- Order History
+### Home Page
+![Image](https://github.com/user-attachments/assets/9cddc00b-cbf8-490a-92b1-edf5c0ab0e6f)
 
-### Restaurant Owner Dashboard
-- Menu Management
-- Order Processing
-- Event Creation
-- Restaurant Settings
+### Search Page
+![Image](https://github.com/user-attachments/assets/40b30703-53fa-4f17-9422-26a9df402748)
 
-### Admin Interface
-- User Management
-- Restaurant Oversight
-- System Configuration
+### Auth Page
+![Image](https://github.com/user-attachments/assets/28afcfd8-9d29-4f2e-aed0-5291b452f745)
+
+### Restaurant View
+![Image](https://github.com/user-attachments/assets/ac0f698b-42be-4e5e-ab4c-2c5c3351eb0e)
+
+### Restaurant Owner Management
+<img width="1280" alt="Image" src="https://github.com/user-attachments/assets/901b5626-ab58-49f5-b6a9-69e0284f7ea0" />
+
+### Admin Panel
+<img width="1280" alt="Image" src="https://github.com/user-attachments/assets/69941aa0-4388-44bd-b32c-44c9a5681660" />
+
+### Cart Page
+<img width="1280" alt="Image" src="https://github.com/user-attachments/assets/bf10f7b9-a009-4a7b-807a-ddba967cf439" />
+
+### Order View
+<img width="1280" alt="Image" src="https://github.com/user-attachments/assets/280f68ec-4131-4658-918d-0f1a7d97c21e" />
