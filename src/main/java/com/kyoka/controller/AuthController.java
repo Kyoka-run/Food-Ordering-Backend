@@ -1,5 +1,6 @@
 package com.kyoka.controller;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.kyoka.dto.UserDTO;
 import com.kyoka.exception.ResourceNotFoundException;
 import com.kyoka.model.AppRole;
@@ -9,12 +10,10 @@ import com.kyoka.model.User;
 import com.kyoka.repository.CartRepository;
 import com.kyoka.repository.RoleRepository;
 import com.kyoka.repository.UserRepository;
+import com.kyoka.security.dto.*;
 import com.kyoka.security.jwt.JwtUtils;
-import com.kyoka.security.dto.LoginRequest;
-import com.kyoka.security.dto.SignupRequest;
-import com.kyoka.security.dto.LoginResponse;
-import com.kyoka.security.dto.MessageResponse;
 import com.kyoka.security.UserDetailsImpl;
+import com.kyoka.service.impl.GoogleTokenVerifier;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,6 +48,9 @@ public class AuthController {
 
     @Autowired
     CartRepository cartRepository;
+
+    @Autowired
+    private GoogleTokenVerifier googleTokenVerifier;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
@@ -154,6 +156,72 @@ public class AuthController {
     public ResponseEntity<?> signOutUser() {
         return ResponseEntity.ok(new MessageResponse("You've been logged out successfully"));
     }
+
+    @PostMapping("/google")
+    public ResponseEntity<?> googleLogin(@RequestBody GoogleLoginRequest request) {
+        try {
+            // Verify Google ID token
+            GoogleIdToken idToken = googleTokenVerifier.verifyToken(request.getIdToken());
+            GoogleIdToken.Payload payload = idToken.getPayload();
+
+            // Extract user information from Google token
+            String email = payload.getEmail();
+            String name = (String) payload.get("name");
+
+            // Find or create user in our system
+            User user = findOrCreateGoogleUser(email, name);
+
+            // Generate our JWT token
+            UserDetailsImpl userDetails = UserDetailsImpl.build(user);
+            String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
+
+            List<String> roles = userDetails.getAuthorities().stream()
+                    .map(item -> item.getAuthority())
+                    .toList();
+
+            LoginResponse response = new LoginResponse(user.getUserId(), jwtToken, user.getUserName(), roles);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("message", "Google login failed: " + e.getMessage());
+            map.put("status", false);
+            return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private User findOrCreateGoogleUser(String email, String name) {
+        // Check if user already exists
+        Optional<User> existingUser = userRepository.findByEmail(email);
+
+        if (existingUser.isPresent()) {
+            return existingUser.get();
+        }
+
+        // Create new user for Google login
+        User newUser = new User();
+        newUser.setEmail(email);
+        newUser.setUserName(name);
+        // No password needed for Google users
+        newUser.setPassword(encoder.encode("GOOGLE_USER")); // Placeholder password
+
+        // Assign default customer role
+        Set<Role> roles = new HashSet<>();
+        Role customerRole = roleRepository.findByRoleName(AppRole.ROLE_CUSTOMER)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(customerRole);
+        newUser.setRoles(roles);
+
+        User savedUser = userRepository.save(newUser);
+
+        // Create cart for new user
+        Cart cart = new Cart();
+        cart.setUser(savedUser);
+        cartRepository.save(cart);
+
+        return savedUser;
+    }
+
 
 //    @PostMapping("/reset-password")
 //    public ResponseEntity<ApiResponse> resetPassword(
