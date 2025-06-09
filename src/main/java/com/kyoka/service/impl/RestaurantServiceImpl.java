@@ -49,6 +49,8 @@ public class RestaurantServiceImpl implements RestaurantService {
         restaurant.setRegistrationDate(LocalDateTime.now());
         restaurant.setOwner(user);
         restaurant.setOpen(true);
+        restaurant.setLatitude(restaurantDTO.getLatitude());
+        restaurant.setLongitude(restaurantDTO.getLongitude());
 
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
         return modelMapper.map(savedRestaurant, RestaurantDTO.class);
@@ -60,6 +62,8 @@ public class RestaurantServiceImpl implements RestaurantService {
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant", "id", restaurantId));
 
         restaurant.setRestaurantAddress(restaurantDTO.getAddress());
+        restaurant.setLatitude(restaurantDTO.getLatitude());
+        restaurant.setLongitude(restaurantDTO.getLongitude());
         restaurant.setContactInformation(restaurantDTO.getContactInformation());
         restaurant.setCuisineType(restaurantDTO.getCuisineType());
         restaurant.setDescription(restaurantDTO.getDescription());

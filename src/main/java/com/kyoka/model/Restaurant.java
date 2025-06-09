@@ -32,6 +32,8 @@ public class Restaurant {
     private String description;
     private String cuisineType;
     private String restaurantAddress;
+    private Double latitude;
+    private Double longitude;
 
     @Embedded
     private ContactInformation contactInformation;
